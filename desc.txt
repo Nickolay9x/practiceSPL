@@ -1,4 +1,4 @@
-32 registers:
+32 REGS:
 eax 	---- 	ah al
 ebx 	---- 	bh bl
 ecx 	---- 	ch cl
@@ -7,7 +7,7 @@ edx 	---- 	dh dl
 ip
 esp
 
-commands:
+COMMANDS:
 mov
 mul 	---- eax * reg 	---->	eax
 div	---- eax / reg 	----> edx
@@ -29,7 +29,7 @@ jb/jl/jbe/jle/je
 
 int
 
-symbols:
+SYMBOLS:
 ,
 []
 :
