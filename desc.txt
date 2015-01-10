@@ -4,7 +4,7 @@ ebx	(1)	---- 	bh	(1)
 ecx	(2)	---- 	ch	(2)
 edx	(3) 	----	dh	(3)
 
-ip		(4)
+ip	(4)
 esp	(5)
 
 COMMANDS:
@@ -12,8 +12,8 @@ mov
 
 add
 sub
-mul 	---- eax	*	reg 	---->	eax
-div	---- eax	/	reg 	----> eax - i edx - f
+mul 	---- 	eax	*	reg 	---->	eax
+div	---- 	eax	/	reg 	----> 	eax - i edx - f
 
 inc
 dec
@@ -72,104 +72,104 @@ use ah:
 
 Opcodes:
 OP_MOV_1	1		-		mov 	reg,		reg
-OP_MOV_2	2		-		mov		reg,		integer
+OP_MOV_2	2		-		mov	reg,		integer
 OP_MOV_3	3 		-		mov 	reg,		[reg]
-OP_MOV_4	4		-		mov		[reg],	reg
+OP_MOV_4	4		-		mov	[reg],		reg
 
 	ARITHMETIC
 
-OP_ADD_1	5		-		add		reg, 		reg
-OP_ADD_2	6		-		add		reg,		integer
-OP_ADD_3	7		-		add		reg,		[reg]
-OP_ADD_4	8		-		add		[reg],	reg
+OP_ADD_1	5		-		add	reg, 		reg
+OP_ADD_2	6		-		add	reg,		integer
+OP_ADD_3	7		-		add	reg,		[reg]
+OP_ADD_4	8		-		add	[reg],		reg
 
-OP_SUB_1	9		-		sub		reg, 		reg
-OP_SUB_2	10	-		sub		reg,		integer
-OP_SUB_3	11	-		sub		reg,		[reg]
-OP_SUB_4	12	-		sub		[reg],	reg
+OP_SUB_1	9		-		sub	reg, 		reg
+OP_SUB_2	10		-		sub	reg,		integer
+OP_SUB_3	11		-		sub	reg,		[reg]
+OP_SUB_4	12		-		sub	[reg],		reg
 
-OP_MUL_1	13	-		mul 		reg
-OP_MUL_2	14	-		mul		integer
-OP_MUL_3	15	-		mul		[reg]
+OP_MUL_1	13		-		mul 	reg
+OP_MUL_2	14		-		mul	integer
+OP_MUL_3	15		-		mul	[reg]
 
-OP_DIV_1	16	-		div		reg
-OP_DIV_2	17	-		div		integer
-OP_DIV_3	18	-		div		[reg]
+OP_DIV_1	16		-		div	reg
+OP_DIV_2	17		-		div	integer
+OP_DIV_3	18		-		div	[reg]
 
 
-OP_INC_1	19 	-		inc 		reg
-OP_INC_2	20	-		inc		[reg]
+OP_INC_1	19 		-		inc 	reg
+OP_INC_2	20		-		inc	[reg]
 
-OP_DEC_1	21 	-		dec		reg
-OP_DEC_2	22 	-		dec		[reg]
+OP_DEC_1	21 		-		dec	reg
+OP_DEC_2	22 		-		dec	[reg]
 
 	SHIFT
 
-OP_ROR_1	30	-		ror		reg
-OP_ROR_2	31	-		ror		[reg]
-OP_ROL_1	32	-		rol		reg
-OP_ROL_2	33	-		rol		[reg]
+OP_ROR_1	30		-		ror	reg
+OP_ROR_2	31		-		ror	[reg]
+OP_ROL_1	32		-		rol	reg
+OP_ROL_2	33		-		rol	[reg]
 
-OP_SHR_1	34	-		shr		reg
-OP_SHR_2	35	-		shr		[reg]
-OP_SHL_1	36	-		shl		reg
-OP_SHL_2	37	-		shl		[reg]
+OP_SHR_1	34		-		shr	reg
+OP_SHR_2	35		-		shr	[reg]
+OP_SHL_1	36		-		shl	reg
+OP_SHL_2	37		-		shl	[reg]
 
 	STACK
 
-OP_PUSH		40	-		push	reg
-OP_PUSH_1	41	-		push	integer
-OP_POP		42	-		pop		reg
+OP_PUSH		40		-		push	reg
+OP_PUSH_1	41		-		push	integer
+OP_POP		42		-		pop	reg
 
 	LABELS
 	
-OP_JMP_1	50	-		jmp		integer
-OP_JMP_2	51	-		jmp		[integer]
+OP_JMP_1	50		-		jmp	integer
+OP_JMP_2	51		-		jmp	[integer]
+	
+OP_JE_1		52		-		je	integer
+OP_JE_2		53		-		jne	[integer]
 
-OP_JE_1		52	-		je			integer
-OP_JE_2		53	-		jne		[integer]
+OP_JB_1		54		-		jb	integer
+OP_JB_2		55		-		jb	[integer]
+OP_JL_1		56		-		jl	integer
+OP_JL_2		57		-		jl	[integer]
 
-OP_JB_1		54	-		jb			integer
-OP_JB_2		55	-		jb			[integer]
-OP_JL_1		56	-		jl			integer
-OP_JL_2		57	-		jl			[integer]
+OP_JBE_1	58		-		jbe	integer
+OP_JBE_2	59		-		jbe	[integer]
+OP_JLE_1	60		-		jle	integer
+OP_JLE_2	61		-		jle	[integer]
 
-OP_JBE_1	58	-		jbe		integer
-OP_JBE_2	59	-		jbe		[integer]
-OP_JLE_1	60	-		jle		integer
-OP_JLE_2	61	-		jle		[integer]
+OP_JNB_1	62		-		jnb	integer
+OP_JNB_2	63		-		jnb	[integer]
+OP_JNL_1	64		-		jnl	integer
+OP_JNL_2	65		-		jnl	[integer]
 
-OP_JNB_1	62	-		jnb		integer
-OP_JNB_2	63	-		jnb		[integer]
-OP_JNL_1	64	-		jnl		integer
-OP_JNL_2	65	-		jnl		[integer]
-
-OP_CMP_1	66	-		cmp		reg,		reg
-OP_CMP_2	67	-		cmp		reg,		integer
-OP_CMP_3	68	-		cmp		reg,		[reg]
+OP_CMP_1	66		-		cmp	reg,		reg
+OP_CMP_2	67		-		cmp	reg,		integer
+OP_CMP_3	68		-		cmp	reg,		[reg]
 
 	INTERRUPT
 
-OP_INT		70	- 		int 		integer
+OP_INT		70		- 		int 	integer
 
 	FUNCS
 	
-OP_CALL_1	80	-		call		integer
-OP_CALL_2	81	-		call		[integer]
-OP_RET		82	-		ret
+OP_CALL_1	80		-		call	integer
+OP_CALL_2	81		-		call	[integer]
+OP_RET		82		-		ret
 
 	LOGIC
 	
-OP_AND_1	90 	-		and 		reg,		reg
-OP_AND_2	91	-		and 		reg,		integer
-OP_AND_3	92 	-		and 		reg,		[reg]
+OP_AND_1	90 		-		and 	reg,		reg
+OP_AND_2	91		-		and 	reg,		integer
+OP_AND_3	92 		-		and 	reg,		[reg]
 
-OP_OR_1		93	-		or		reg,		reg
-OP_OR_2		94	-		or		reg,		integer
-OP_OR_3		95	-		or		reg,		[reg]
+OP_OR_1		93		-		or	reg,		reg
+OP_OR_2		94		-		or	reg,		integer
+OP_OR_3		95		-		or	reg,		[reg]
 
-OP_XOR_1	96	-		xor		reg,		reg
-OP_XOR_2	97	-		xor		reg,		integer
-OP_XOR_3	98	-		xor		reg,		[reg]
+OP_XOR_1	96		-		xor	reg,		reg
+OP_XOR_2	97		-		xor	reg,		integer
+OP_XOR_3	98		-		xor	reg,		[reg]
 
-OP_NOT		99	-		not		reg
+OP_NOT		99		-		not	reg
