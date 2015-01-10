@@ -1,0 +1,36 @@
+32 registers:
+eax 	---- 	ah al
+ebx 	---- 	bh bl
+ecx 	---- 	ch cl
+edx 	---- 	dh dl
+
+ip
+esp
+
+commands:
+mov
+mul 	---- eax * reg 	---->	eax
+div	---- eax / reg 	----> edx
+add
+sub
+inc
+dec
+
+ror/rol
+shr/shl
+
+push
+pop
+
+label:
+jmp
+cmp
+jb/jl/jbe/jle/je
+
+int
+
+symbols:
+,
+[]
+:
+
