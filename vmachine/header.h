@@ -1,11 +1,11 @@
 #include <stdio.h>
-#include <string.h>
 
 #ifndef H_HEADER
 #define H_HEADER
+#define BCODE_SIZE 5000
 
 typedef		unsigned char	BYTE;
-typedef		short int		WORD;
+typedef		short			WORD;
 typedef		int				DWORD;
 
 
