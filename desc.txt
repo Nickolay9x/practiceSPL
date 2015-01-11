@@ -117,8 +117,8 @@ OP_SHL_2	37		-		shl	[reg]
 
 	STACK
 
-OP_PUSH		40		-		push	reg
-OP_PUSH_1	41		-		push	integer
+OP_PUSH_1	40		-		push	reg
+OP_PUSH_2	41		-		push	integer
 OP_POP		42		-		pop	reg
 
 	LABELS
@@ -127,30 +127,33 @@ OP_JMP_1	50		-		jmp	integer
 OP_JMP_2	51		-		jmp	[integer]
 	
 OP_JE_1		52		-		je	integer
-OP_JE_2		53		-		jne	[integer]
+OP_JE_2		53		-		je	[integer]
 
-OP_JB_1		54		-		jb	integer
-OP_JB_2		55		-		jb	[integer]
-OP_JL_1		56		-		jl	integer
-OP_JL_2		57		-		jl	[integer]
+OP_JNE_1	54		-		jne	integer
+OP_JNE_2	55		-		jne	[integer]
 
-OP_JBE_1	58		-		jbe	integer
-OP_JBE_2	59		-		jbe	[integer]
-OP_JLE_1	60		-		jle	integer
-OP_JLE_2	61		-		jle	[integer]
+OP_JB_1		56		-		jb	integer
+OP_JB_2		57		-		jb	[integer]
+OP_JL_1		58		-		jl	integer
+OP_JL_2		59		-		jl	[integer]
 
-OP_JNB_1	62		-		jnb	integer
-OP_JNB_2	63		-		jnb	[integer]
-OP_JNL_1	64		-		jnl	integer
-OP_JNL_2	65		-		jnl	[integer]
+OP_JBE_1	60		-		jbe	integer
+OP_JBE_2	61		-		jbe	[integer]
+OP_JLE_1	62		-		jle	integer
+OP_JLE_2	63		-		jle	[integer]
 
-OP_CMP_1	66		-		cmp	reg,		reg
-OP_CMP_2	67		-		cmp	reg,		integer
-OP_CMP_3	68		-		cmp	reg,		[reg]
+OP_JNB_1	64		-		jnb	integer
+OP_JNB_2	65		-		jnb	[integer]
+OP_JNL_1	66		-		jnl	integer
+OP_JNL_2	67		-		jnl	[integer]
+
+OP_CMP_1	68		-		cmp	reg,		reg
+OP_CMP_2	69		-		cmp	reg,		integer
+OP_CMP_3	70		-		cmp	reg,		[reg]
 
 	INTERRUPT
 
-OP_INT		70		- 		int 	integer
+OP_INT		75		- 		int 	integer
 
 	FUNCS
 	
