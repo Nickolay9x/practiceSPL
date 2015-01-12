@@ -1,10 +1,10 @@
-#include "regs.h"
 #include <malloc.h>
 #include <stdio.h>
+#include "regs.h"
 
 //Init registers name and codes
 
-void init_regs(reg32** gpr, reg16* ip) {
+void init_regs(reg32 **gpr, reg16 *ip, reg32 *esp) {
 
 	// General Purpose Registers
 
@@ -28,14 +28,14 @@ void init_regs(reg32** gpr, reg16* ip) {
 	(*gpr)[3].name = "edx";
 	(*gpr)[3].code = 3;
 
-	(*gpr)[4].high_reg.name = "sh";
-	(*gpr)[4].high_reg.code = 15;
+	(*gpr)[4].high_reg.name = "navail";
+	(*gpr)[4].high_reg.code = 14;
 	(*gpr)[4].name = "esp";
-	(*gpr)[4].code = 5;
+	(*gpr)[4].code = 4;
 
 	// IP
 
 	ip->name = "ip";
-	ip->code = 4;
+	ip->code = 5;
 
 }

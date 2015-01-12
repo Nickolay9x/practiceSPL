@@ -1,14 +1,13 @@
-#include "types.h"
-
 #ifndef H_REGS
 #define H_REGS
+#include "types.h"
 
 //2 bytes register struct
 
 typedef struct {
 
 	char* name;
-	WORD code;
+	unsigned char code;
 
 } reg16;
 
@@ -17,12 +16,12 @@ typedef struct {
 typedef struct {
 
 	char* name;
-	WORD code;
+	unsigned char code;
 
 	reg16 high_reg;
 
 } reg32;
 
-void init_regs(reg32** gpr, reg16* ip);
+void init_regs(reg32 **gpr, reg16 *ip);
 
 #endif

@@ -1,7 +1,22 @@
 #include <stdio.h>
 #include <malloc.h>
-#include "list.h"
+#include <string.h>
 #include "str.h"
+#include "translater.h"
+
+void tolower_case(char *str) {
+
+	size_t len, i;
+
+	len = strlen(str);
+
+	for(i = 0; i < len; i++) {
+
+		str[i] += ((str[i] >= 65) && (str[i] <= 90)) ? 32 : 0;
+
+	}
+
+}
 
 //Parse string from file and add to list
 
@@ -119,16 +134,22 @@ void parse(char *str, size_t length, list **head) {
 
 }
 
-//Translate commands
+//Analysis commands
 
-void translate(list **head, BYTE **bcode_array) {
+unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 	//============DATA SEG===========
 
 	size_t i, j;
-	size_t n_line;
 
-	list *temp;
+	size_t n_line;
+	size_t counter;
+
+	size_t check_args;
+
+	list *current_line;
+
+	unsigned char flag;
 
 	//===============================
 
@@ -136,13 +157,46 @@ void translate(list **head, BYTE **bcode_array) {
 
 	i = 0; j = 0; 
 	n_line = 0;
+	counter = 0;
 
-	temp = (*head);
+	current_line = (*head);
+
+	flag = 0;
 
 	//===============================
 
-	printf("%s\n", temp->next->arg2);
+	while(current_line) {
 
-	(*bcode_array)[1] = 33;
+		n_line++;
+
+		if(!strcmp(current_line->cmd, "mov")) {
+
+			if(current_line->arg2) {
+
+				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
+
+				translate_mov(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		error(CMD_ERROR, n_line, current_line->cmd);			
+		flag = ERROR;
+		current_line = current_line->next;
+
+	}
+
+	return (flag == 1) ? ERROR : 0;
 
 }

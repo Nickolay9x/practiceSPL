@@ -2,10 +2,6 @@
 #define H_TYPES
 #define BCODE_SIZE 5000
 
-typedef		unsigned char BYTE;
-typedef		short WORD;
-typedef		int DWORD;
-
 typedef enum {
 
 	OP_MOV_1 = 1,
@@ -155,10 +151,19 @@ typedef enum {
 
 typedef enum {
 
+	ERROR = 1,
+	CMD_ERROR,
+	ARG1_ERROR,
+	ARG2_ERROR
+
+} error_type;
+
+typedef enum {
+
 	INT_10 = 10,
 	INT_16 = 16,
 	INT_21 = 21
 
-} ints;
+} int_type;
 
 #endif

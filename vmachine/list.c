@@ -1,7 +1,7 @@
-#include "list.h"
 #include <malloc.h>
 #include <string.h>
 #include <stdio.h>
+#include "str.h"
 
 void append(list **head, char *cmd, char *arg1, char *arg2) {
 
@@ -13,11 +13,13 @@ void append(list **head, char *cmd, char *arg1, char *arg2) {
 
 		(*head)->cmd = (char*)malloc(strlen(cmd) + 1);
 		strcpy_s((*head)->cmd, strlen(cmd) + 1, cmd);
+		tolower_case((*head)->cmd);
 
 		if(arg1) {
 
 			(*head)->arg1 = (char*)malloc(strlen(arg1) + 1);
 			strcpy_s((*head)->arg1, strlen(arg1) + 1, arg1);
+			tolower_case((*head)->arg1);
 
 		} else {
 
@@ -29,6 +31,7 @@ void append(list **head, char *cmd, char *arg1, char *arg2) {
 
 			(*head)->arg2 = (char*)malloc(strlen(arg2) + 1);
 			strcpy_s((*head)->arg2, strlen(arg2) + 1, arg2);
+			tolower_case((*head)->arg2);
 			 
 		} else {
 
@@ -46,11 +49,13 @@ void append(list **head, char *cmd, char *arg1, char *arg2) {
 
 		temp->next->cmd = (char*)malloc(strlen(cmd) + 1);
 		strcpy_s(temp->next->cmd, strlen(cmd) + 1, cmd);
+		tolower_case(temp->next->cmd);
 
 		if(arg1) {
 
 			temp->next->arg1 = (char*)malloc(strlen(arg1) + 1);
 			strcpy_s(temp->next->arg1, strlen(arg1) + 1, arg1);
+			tolower_case(temp->next->arg1);
 
 		} else {
 
@@ -62,6 +67,7 @@ void append(list **head, char *cmd, char *arg1, char *arg2) {
 		
 			temp->next->arg2 = (char*)malloc(strlen(arg2) + 1);
 			strcpy_s(temp->next->arg2, strlen(arg2) + 1, arg2);
+			tolower_case(temp->next->arg2);
 
 		} else {
 

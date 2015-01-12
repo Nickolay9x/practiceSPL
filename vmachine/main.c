@@ -29,9 +29,12 @@ int main(int argc, char** argv) {
 	
 	//============ALLOCATE===========
 
-	bcode_array = (BYTE*)calloc(BCODE_SIZE, sizeof(BYTE));
+	bcode_array = (unsigned char*)calloc(BCODE_SIZE, sizeof(unsigned char));
 	ip_reg = (reg16*)malloc(sizeof(reg16));
 	registers = (reg32*)calloc(5, sizeof(reg32));
+
+	//==============INIT=============
+
 	head = NULL;
 
 	init_regs(&registers, ip_reg);
@@ -71,9 +74,10 @@ int main(int argc, char** argv) {
 
 	}
 
-	translate(&head, &bcode_array);
+	printf("\nAnalys result: %d\n", analysis(&head, &bcode_array));
 
-	printf("%c\n", bcode_array[1]);
+	// 0 - Everything OKEY
+	// 1 - One or more lines have errors
 
 	clean(&head);
 	_getch(); //temporary
