@@ -118,3 +118,31 @@ void parse(char *str, size_t length, list **head) {
 	append(head, cmd, arg1, arg2);
 
 }
+
+//Translate commands
+
+void translate(list **head, BYTE **bcode_array) {
+
+	//============DATA SEG===========
+
+	size_t i, j;
+	size_t n_line;
+
+	list *temp;
+
+	//===============================
+
+	//==========INITIALIZE===========
+
+	i = 0; j = 0; 
+	n_line = 0;
+
+	temp = (*head);
+
+	//===============================
+
+	printf("%s\n", temp->next->arg2);
+
+	(*bcode_array)[1] = 33;
+
+}

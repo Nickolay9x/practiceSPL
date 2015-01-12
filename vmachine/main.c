@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
 	size_t i;
 
 	char *temp;
-	list *head;
+	list *head; //list with all commands
 	
 	//===============================
 	
@@ -70,6 +70,10 @@ int main(int argc, char** argv) {
 		parse(temp, strlen(temp), &head);
 
 	}
+
+	translate(&head, &bcode_array);
+
+	printf("%c\n", bcode_array[1]);
 
 	clean(&head);
 	_getch(); //temporary
