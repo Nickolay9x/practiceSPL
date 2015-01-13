@@ -191,6 +191,138 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 		}
 
+		if(!strcmp(current_line->cmd, "add")) {
+
+			if(current_line->arg2) {
+
+				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
+
+				translate_add(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		if(!strcmp(current_line->cmd, "sub")) {
+
+			if(current_line->arg2) {
+
+				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
+
+				translate_sub(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		if(!strcmp(current_line->cmd, "mul")) {
+
+			if(!current_line->arg2) {
+
+				check_args = check_one_argument(current_line->arg1);
+
+				translate_mul(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		if(!strcmp(current_line->cmd, "div")) {
+
+			if(!current_line->arg2) {
+
+				check_args = check_one_argument(current_line->arg1);
+
+				translate_div(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		if(!strcmp(current_line->cmd, "inc")) {
+
+			if(!current_line->arg2) {
+
+				check_args = check_one_argument(current_line->arg1);
+
+				translate_inc(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		if(!strcmp(current_line->cmd, "dec")) {
+
+			if(!current_line->arg2) {
+
+				check_args = check_one_argument(current_line->arg1);
+
+				translate_dec(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
 		error(CMD_ERROR, n_line, current_line->cmd);			
 		flag = ERROR;
 		current_line = current_line->next;

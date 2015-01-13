@@ -6,6 +6,8 @@
 unsigned short is_reg(char *reg);
 unsigned short is_number(char *num);
 unsigned short is_memory(char *addr);
+
+size_t check_one_argument(char* arg1);
 size_t check_two_arguments(char* arg1, char* arg2);
 
 //======FUNCS TO GET LEXEMS CODE=======
