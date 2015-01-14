@@ -105,15 +105,15 @@ OP_DEC_2	22 		-		dec	[reg]
 
 	SHIFT
 
-OP_ROR_1	30		-		ror	reg
-OP_ROR_2	31		-		ror	[reg]
-OP_ROL_1	32		-		rol	reg
-OP_ROL_2	33		-		rol	[reg]
+OP_ROR_1	30		-		ror	reg,		reg
+OP_ROR_2	31		-		ror	reg,		integer
+OP_ROL_1	32		-		rol	reg,		reg
+OP_ROL_2	33		-		rol	reg,		integer
 
-OP_SHR_1	34		-		shr	reg
-OP_SHR_2	35		-		shr	[reg]
-OP_SHL_1	36		-		shl	reg
-OP_SHL_2	37		-		shl	[reg]
+OP_SHR_1	34		-		shr	reg,		reg
+OP_SHR_2	35		-		shr	reg,		integer
+OP_SHL_1	36		-		shl	reg,		reg
+OP_SHL_2	37		-		shl	reg,		integer
 
 	STACK
 
