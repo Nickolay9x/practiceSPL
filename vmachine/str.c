@@ -169,6 +169,9 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 		n_line++;
 
+		//===============================
+		//=============MOV===============
+
 		if(!strcmp(current_line->cmd, "mov")) {
 
 			if(current_line->arg2) {
@@ -190,6 +193,12 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			}
 
 		}
+
+		//===============================
+
+		//============ARITHETIC=============
+
+		//=============ADD===============
 
 		if(!strcmp(current_line->cmd, "add")) {
 
@@ -213,6 +222,9 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 		}
 
+		//===============================
+		//=============SUB===============
+
 		if(!strcmp(current_line->cmd, "sub")) {
 
 			if(current_line->arg2) {
@@ -234,6 +246,9 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			}
 
 		}
+
+		//===============================
+		//=============MUL===============
 
 		if(!strcmp(current_line->cmd, "mul")) {
 
@@ -257,6 +272,9 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 		}
 
+		//===============================
+		//=============DIV===============
+
 		if(!strcmp(current_line->cmd, "div")) {
 
 			if(!current_line->arg2) {
@@ -278,6 +296,9 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			}
 
 		}
+
+		//===============================
+		//=============INC===============
 
 		if(!strcmp(current_line->cmd, "inc")) {
 
@@ -301,6 +322,9 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 		}
 
+		//===============================
+		//=============DEC===============
+
 		if(!strcmp(current_line->cmd, "dec")) {
 
 			if(!current_line->arg2) {
@@ -323,9 +347,205 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 		}
 
+		//===============================
+
+		//==================================
+		//===============SHIFT==============
+
+		//=============ROR===============
+
+		if(!strcmp(current_line->cmd, "ror")) {
+
+			if(current_line->arg2) {
+
+				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
+
+				translate_ror(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+		//=============ROL===============
+
+		if(!strcmp(current_line->cmd, "rol")) {
+
+			if(current_line->arg2) {
+
+				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
+
+				translate_rol(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+		//=============SHR===============
+
+		if(!strcmp(current_line->cmd, "shr")) {
+
+			if(current_line->arg2) {
+
+				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
+
+				translate_shr(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+		//=============SHL===============
+
+		if(!strcmp(current_line->cmd, "shl")) {
+
+			if(current_line->arg2) {
+
+				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
+
+				translate_shl(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+
+		//==================================
+		//===============STACK==============
+
+		//=============PUSH==============
+
+		if(!strcmp(current_line->cmd, "push")) {
+
+			if(!current_line->arg2) {
+
+				check_args = check_one_argument(current_line->arg1);
+
+				translate_push(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+		//=============POP===============
+
+		if(!strcmp(current_line->cmd, "pop")) {
+
+			if(!current_line->arg2) {
+
+				check_args = check_one_argument(current_line->arg1);
+
+				translate_pop(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+
+		//==================================
+		//==============LABELS==============
+
+		//LATER
+
+		//==================================
+		//=============INTERRUPT============
+
+		if(!strcmp(current_line->cmd, "int")) {
+
+			if(!current_line->arg2) {
+
+				check_args = check_one_argument(current_line->arg1);
+
+				translate_int(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//==================================
+
+		//========UNKNOWN COMMAND========
+
 		error(CMD_ERROR, n_line, current_line->cmd);			
 		flag = ERROR;
 		current_line = current_line->next;
+
+		//===============================
 
 	}
 

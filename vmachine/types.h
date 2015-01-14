@@ -66,8 +66,10 @@ typedef enum {
 
 	OP_PUSH_1 = 40,
 	OP_PUSH_2,
+	OP_PUSH_3,
 
-	OP_POP,
+	OP_POP_1,
+	OP_POP_2,
 
 	//====LABELS====
 	//======50======
