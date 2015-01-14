@@ -750,3 +750,161 @@ void translate_int(list **cur_line, unsigned char **bcode_array, size_t *num, si
 	}
 
 }
+
+//LATER FUNCS
+
+void translate_and(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+
+	switch(code) {
+
+	case 1:
+		put_opc_cmd(OP_AND_1, bcode_array, num);
+		put_opc_reg((*cur_line)->arg1, bcode_array, num);
+		put_opc_reg((*cur_line)->arg2, bcode_array, num);
+		break;
+
+	case 2:
+		put_opc_cmd(OP_AND_2, bcode_array, num);
+		put_opc_reg((*cur_line)->arg1, bcode_array, num);
+		put_opc_num((*cur_line)->arg2, bcode_array, num);
+		break;
+
+	case 3:
+		error(ARG1_ERROR, line, (*cur_line)->arg1);
+		(*flag) = ERROR;
+		break;
+
+	case 4:
+		error(ARG2_ERROR, line, (*cur_line)->arg2);
+		(*flag) = ERROR;
+		break;
+
+	case 5:
+		put_opc_cmd(OP_AND_3, bcode_array, num);
+		put_opc_reg((*cur_line)->arg1, bcode_array, num);
+		put_opc_addr((*cur_line)->arg2, bcode_array, num);
+		break;
+
+	case 6:
+		error(ARG1_ERROR, line, (*cur_line)->arg1);
+		(*flag) = ERROR;
+		break;
+
+	case 7:
+		error(ARG1_ERROR, line, (*cur_line)->arg2);
+		(*flag) = ERROR;
+		break;
+
+	}
+
+}
+
+void translate_or(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+
+	switch(code) {
+
+	case 1:
+		put_opc_cmd(OP_OR_1, bcode_array, num);
+		put_opc_reg((*cur_line)->arg1, bcode_array, num);
+		put_opc_reg((*cur_line)->arg2, bcode_array, num);
+		break;
+
+	case 2:
+		put_opc_cmd(OP_OR_1, bcode_array, num);
+		put_opc_reg((*cur_line)->arg1, bcode_array, num);
+		put_opc_num((*cur_line)->arg2, bcode_array, num);
+		break;
+
+	case 3:
+		error(ARG1_ERROR, line, (*cur_line)->arg1);
+		(*flag) = ERROR;
+		break;
+
+	case 4:
+		error(ARG2_ERROR, line, (*cur_line)->arg2);
+		(*flag) = ERROR;
+		break;
+
+	case 5:
+		put_opc_cmd(OP_OR_1, bcode_array, num);
+		put_opc_reg((*cur_line)->arg1, bcode_array, num);
+		put_opc_addr((*cur_line)->arg2, bcode_array, num);
+		break;
+
+	case 6:
+		error(ARG1_ERROR, line, (*cur_line)->arg1);
+		(*flag) = ERROR;
+		break;
+
+	case 7:
+		error(ARG1_ERROR, line, (*cur_line)->arg2);
+		(*flag) = ERROR;
+		break;
+
+	}
+
+}
+
+void translate_xor(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+
+	switch(code) {
+
+	case 1:
+		put_opc_cmd(OP_XOR_1, bcode_array, num);
+		put_opc_reg((*cur_line)->arg1, bcode_array, num);
+		put_opc_reg((*cur_line)->arg2, bcode_array, num);
+		break;
+
+	case 2:
+		put_opc_cmd(OP_XOR_2, bcode_array, num);
+		put_opc_reg((*cur_line)->arg1, bcode_array, num);
+		put_opc_num((*cur_line)->arg2, bcode_array, num);
+		break;
+
+	case 3:
+		error(ARG1_ERROR, line, (*cur_line)->arg1);
+		(*flag) = ERROR;
+		break;
+
+	case 4:
+		error(ARG2_ERROR, line, (*cur_line)->arg2);
+		(*flag) = ERROR;
+		break;
+
+	case 5:
+		put_opc_cmd(OP_XOR_3, bcode_array, num);
+		put_opc_reg((*cur_line)->arg1, bcode_array, num);
+		put_opc_addr((*cur_line)->arg2, bcode_array, num);
+		break;
+
+	case 6:
+		error(ARG1_ERROR, line, (*cur_line)->arg1);
+		(*flag) = ERROR;
+		break;
+
+	case 7:
+		error(ARG1_ERROR, line, (*cur_line)->arg2);
+		(*flag) = ERROR;
+		break;
+
+	}
+
+}
+
+void translate_not(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+
+	switch(code) {
+
+	case 1:
+		put_opc_cmd(OP_NOT, bcode_array, num);
+		put_opc_reg((*cur_line)->arg1, bcode_array, num);
+		break;
+
+	default:
+		error(ARG1_ERROR, line, (*cur_line)->arg1);
+		(*flag) = ERROR;
+		break;
+
+	}
+
+}

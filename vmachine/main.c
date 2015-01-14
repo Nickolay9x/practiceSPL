@@ -75,7 +75,9 @@ int main(int argc, char** argv) {
 	}
 
 	printf("\nAnalys result: %d\n", analysis(&head, &bcode_array));
-	printf("%d %d %d", bcode_array[3], bcode_array[4], bcode_array[5]);
+
+	/*for(i = 0; i < 30; i++)
+		printf("%d ", bcode_array[i]);*/
 
 	// 0 - Everything OKEY
 	// 1 - One or more lines have errors

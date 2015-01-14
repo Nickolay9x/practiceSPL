@@ -119,7 +119,7 @@ OP_SHL_2	37		-		shl	reg,		integer
 
 OP_PUSH_1	40		-		push	reg
 OP_PUSH_2	41		-		push	integer
-OP_PUSH3	42		-		push	[reg]
+OP_PUSH_3	42		-		push	[reg]
 OP_POP_1	43		-		pop	reg
 OP_POP_2	44		-		pop	[reg]
 

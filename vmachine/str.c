@@ -538,6 +538,115 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 		}
 
 		//==================================
+		//==============FUNCS===============
+
+		//LATER
+
+		//==================================
+		//===============LOGIC==============
+		
+		//=============AND===============
+
+		if(!strcmp(current_line->cmd, "and")) {
+
+			if(current_line->arg2) {
+
+				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
+
+				translate_and(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+		//==============OR===============
+
+		if(!strcmp(current_line->cmd, "or")) {
+
+			if(current_line->arg2) {
+
+				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
+
+				translate_or(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+		//=============XOR===============
+
+		if(!strcmp(current_line->cmd, "xor")) {
+
+			if(current_line->arg2) {
+
+				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
+
+				translate_xor(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+		//=============NOT===============
+
+		if(!strcmp(current_line->cmd, "not")) {
+
+			if(!current_line->arg2) {
+
+				check_args = check_one_argument(current_line->arg1);
+
+				translate_not(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+
+		//==================================
 
 		//========UNKNOWN COMMAND========
 
