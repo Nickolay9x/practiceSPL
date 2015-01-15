@@ -358,7 +358,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 			if(current_line->arg2) {
 
-				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
+				check_args = check_two_arguments_shift(current_line->arg1, current_line->arg2);
 
 				translate_ror(&current_line, bcode_array, &counter, check_args, n_line, &flag);
 
@@ -383,7 +383,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 			if(current_line->arg2) {
 
-				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
+				check_args = check_two_arguments_shift(current_line->arg1, current_line->arg2);
 
 				translate_rol(&current_line, bcode_array, &counter, check_args, n_line, &flag);
 
@@ -408,7 +408,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 			if(current_line->arg2) {
 
-				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
+				check_args = check_two_arguments_shift(current_line->arg1, current_line->arg2);
 
 				translate_shr(&current_line, bcode_array, &counter, check_args, n_line, &flag);
 
@@ -433,7 +433,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 			if(current_line->arg2) {
 
-				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
+				check_args = check_two_arguments_shift(current_line->arg1, current_line->arg2);
 
 				translate_shl(&current_line, bcode_array, &counter, check_args, n_line, &flag);
 

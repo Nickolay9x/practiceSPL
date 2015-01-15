@@ -19,6 +19,7 @@ typedef struct {
 	unsigned char code;
 
 	reg16 high_reg;
+	reg16 low_reg;
 
 } reg32;
 

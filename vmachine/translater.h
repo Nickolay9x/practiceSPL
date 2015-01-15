@@ -9,6 +9,7 @@ unsigned short is_memory(char *addr);
 
 size_t check_one_argument(char* arg1);
 size_t check_two_arguments(char* arg1, char* arg2);
+size_t check_two_arguments_shift(char* arg1, char* arg2); // For shift becase there can be ebx, <bh/ebx>
 
 //======FUNCS TO GET LEXEMS CODE=======
 
@@ -23,7 +24,8 @@ void error(size_t code, size_t line, char *lexeme);
 
 void put_opc_cmd(unsigned char code, unsigned char **bcode_array, size_t *iter);
 void put_opc_reg(char *reg, unsigned char **bcode_array, size_t *iter);
-void put_opc_num(char *num, unsigned char **bcode_array, size_t *iter);
+void put_opc_num_16(char *num, unsigned char **bcode_array, size_t *iter);
+void put_opc_num_32(char *num, unsigned char **bcode_array, size_t *iter);
 void put_opc_addr(char *addr, unsigned char **bcode_array, size_t *iter);
 
 //=====================================

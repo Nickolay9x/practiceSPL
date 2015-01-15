@@ -49,17 +49,13 @@ typedef enum {
 	//=====SHIFT====
 	//======30======
 
-	OP_ROR_1 = 30,
-	OP_ROR_2,
-	OP_ROL_1,
-	OP_ROL_2,
+	OP_ROR = 30,
+	OP_ROL,
 
-	//======34======
+	//======32======
 
-	OP_SHR_1,
-	OP_SHR_2,
-	OP_SHL_1,
-	OP_SHL_2,
+	OP_SHR,
+	OP_SHL,
 
 	//=====STACK====
 	//======40======
