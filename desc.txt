@@ -65,7 +65,7 @@ use ah:
 
 int 21
 use ah:
-4C 	-		close
+44 	-		close
 09 	-		print integer - top of the stack
 10 	-		print float - first and second elements from the stack. Sep by '.'
 11 	-		print symbols while  dh != 24
