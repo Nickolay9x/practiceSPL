@@ -118,6 +118,7 @@ OP_PUSH_2	41		-		push	integer
 OP_PUSH_3	42		-		push	[reg]
 OP_POP_1	43		-		pop	reg
 OP_POP_2	44		-		pop	[reg]
+OP_DSTACK	45		-		.stack	integer
 
 	LABELS
 	
