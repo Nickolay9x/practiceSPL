@@ -93,8 +93,6 @@ size_t check_one_argument(char* arg1, char* arg2) {
 
 size_t check_two_arguments(char* arg1, char* arg2) {
 
-	int a;
-
 	if(is_reg(arg1)) {
 
 		if(is_reg(arg2)) return (strlen(arg1) == strlen(arg2)) ? 1 : ARG2_ERROR;
@@ -103,11 +101,11 @@ size_t check_two_arguments(char* arg1, char* arg2) {
 
 			if(strlen(arg1) == 2) {
 				
-				return ((unsigned int)atoi(arg2) < 65536) ? 2 : ARG2_ERROR;
+				return ((atoi(arg2) <= 65535) && (atoi(arg2) >= 0)) ? 2 : ARG2_ERROR;
 
 			} else {
-
-				return (atoi(arg2) < 2147483648) ? 2 : ARG2_ERROR;
+				
+				return ((atoi(arg2) <= 2147483647) && (atoi(arg2) >= -2147483647)) ? 2 : ARG2_ERROR;
 
 			}
 

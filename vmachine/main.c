@@ -66,7 +66,7 @@ int main(int argc, char** argv) {
 	temp = (char*)malloc(sizeof(char));
 	i = 0;
 
-	while(fgets(temp, 20, input)) {
+	while(fgets(temp, 40, input)) {
 
 		if(strlen(temp) < 2) continue;
 
@@ -74,9 +74,11 @@ int main(int argc, char** argv) {
 
 	}
 
+	fclose(input);
+
 	printf("\nAnalys result: %d\n", analysis(&head, &bcode_array));
 
-	/*for(i = 0; i < 30; i++)
+	/*for(i = 0; i < 40; i++)
 		printf("%d ", bcode_array[i]);*/
 
 	// 0 - Everything OKEY
