@@ -66,6 +66,7 @@ typedef enum {
 
 	OP_POP_1,
 	OP_POP_2,
+	OP_DSTACK,
 
 	//====LABELS====
 	//======50======
@@ -152,7 +153,9 @@ typedef enum {
 	ERROR = 1,
 	CMD_ERROR,
 	ARG1_ERROR,
-	ARG2_ERROR
+	ARG2_ERROR,
+	DSTACK_NF,
+	DSTACK_TG
 
 } error_type;
 

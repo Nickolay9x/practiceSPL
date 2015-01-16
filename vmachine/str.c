@@ -149,7 +149,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 	list *current_line;
 
-	unsigned char flag;
+	unsigned char flag, stack;
 
 	//===============================
 
@@ -162,12 +162,52 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 	current_line = (*head);
 
 	flag = 0;
+	stack = 1;
 
 	//===============================
 
 	while(current_line) {
 
 		n_line++;
+
+		//============.STACK=============
+
+		if(!strcmp(current_line->cmd, ".stack") && (n_line == 1)) {
+
+			stack = 0;
+
+			if(!current_line->arg2) {
+
+				check_args = check_one_argument(current_line->arg1);
+
+				translate_dstack(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+
+				error(DSTACK_NF, n_line, current_line->cmd);
+				put_opc_num_16("250", bcode_array, &counter);
+
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		} else {
+
+			if((n_line == 1) && (stack)) {
+
+				error(DSTACK_NF, n_line, current_line->cmd);
+				put_opc_num_16("250", bcode_array, &counter);
+
+			}
+
+		}
 
 		//===============================
 		//=============MOV===============

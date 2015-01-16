@@ -206,21 +206,29 @@ void error(size_t code, size_t line, char *lexeme) {
 	switch(code) {
 
 	case 2:
-		printf("ERROR:\tUNKNOWN COMMAND %s\tat (%d) line\n", lexeme, line);
+		printf("ERROR:\tUNKNOWN COMMAND %s at (%d) line\n", lexeme, line);
 		break;
 
 	case 3:
 		if(!lexeme)
-			printf("ERROR:\tILLEGAL AGRUMENT 1 EMPTY\tat (%d) line\n", line);
+			printf("ERROR:\tILLEGAL AGRUMENT 1 EMPTY at (%d) line\n", line);
 		else
-			printf("ERROR:\tILLEGAL AGRUMENT 1 %s\tat (%d) line\n", lexeme, line);
+			printf("ERROR:\tILLEGAL AGRUMENT 1 %s at (%d) line\n", lexeme, line);
 		break;
 
 	case 4:
 		if(!lexeme)
-			printf("ERROR:\tILLEGAL AGRUMENT 2 EMPTY\tat (%d) line\n", line);
+			printf("ERROR:\tILLEGAL AGRUMENT 2 EMPTY at (%d) line\n", line);
 		else
-			printf("ERROR:\tILLEGAL AGRUMENT 2 %s\tat (%d) line\n", lexeme, line);
+			printf("ERROR:\tILLEGAL AGRUMENT 2 %s at (%d) line\n", lexeme, line);
+		break;
+
+	case 5:
+		printf("WARNING: STACK NOT DECLARE. DEFAULT VALUE: 250\n");
+		break;
+
+	case 6:
+		printf("WARNING: STACK CAN NOT BE MORE THAN 64 000. NOW DEFAULT VALUE: 250\n");
 		break;
 
 	}
@@ -267,6 +275,39 @@ void put_opc_addr(char *addr, unsigned char **bcode_array, size_t *iter) {
 }
 
 //====FUNCS TO TRANSLATE COMMANDS======
+
+void translate_dstack(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+
+	switch(code) {
+
+	case 2:
+
+		if(atoi((*cur_line)->arg1) <= 64000) {
+
+			put_opc_num_16((*cur_line)->arg1, bcode_array, num);
+
+		} else {
+
+			error(DSTACK_TG, line, (*cur_line)->arg1);
+			(*flag) = ERROR;
+			put_opc_num_16("250", bcode_array, num);
+
+		}
+
+		break;
+
+	default:
+		error(ARG1_ERROR, line, (*cur_line)->arg1);
+		(*flag) = ERROR;
+
+		error(DSTACK_NF, line, (*cur_line)->arg1);
+		put_opc_num_16("250", bcode_array, num);
+
+		break;
+
+	}
+
+}
 
 void translate_mov(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
 

@@ -32,6 +32,7 @@ void put_opc_addr(char *addr, unsigned char **bcode_array, size_t *iter);
 //====FUNCS TO TRANSLATE COMMANDS======
 //=====================================
 
+void translate_dstack(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag);
 void translate_mov(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag);
 
 //=============ARITHMETIC==============
