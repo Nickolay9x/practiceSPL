@@ -68,53 +68,49 @@ typedef enum {
 	OP_POP_2,
 	OP_DSTACK,
 
-	//====LABELS====
+	//=====LABEL====
 	//======50======
 
-	OP_JMP_1 = 50,
-	OP_JMP_2,
+	OP_LABEL = 50,
+
+	//=====JMP======
+	//======51======
+
+	OP_JMP,
 
 	//======52======
 
-	OP_JE_1,
-	OP_JE_2,
+	OP_JE,
+
+	//======53======
+
+	OP_JNE,
 
 	//======54======
 
-	OP_JNE_1,
-	OP_JNE_2,
+	OP_JB,
+	OP_JL,
 
 	//======56======
 
-	OP_JB_1,
-	OP_JB_2,
-	OP_JL_1,
-	OP_JL_2,
+	OP_JBE,
+	OP_JLE,
 
+	//======58======
+
+	OP_JNB,
+	OP_JNL,
+
+	//======CMP=====
 	//======60======
-
-	OP_JBE_1,
-	OP_JBE_2,
-	OP_JLE_1,
-	OP_JLE_2,
-
-	//======64======
-
-	OP_JNB_1,
-	OP_JNB_2,
-	OP_JNL_1,
-	OP_JNL_2,
-
-	//======68======
 
 	OP_CMP_1,
 	OP_CMP_2,
-	OP_CMP_3,
 
 	//==INTERRUPT===
-	//======75======
+	//======70======
 
-	OP_INT = 75,
+	OP_INT = 70,
 
 	//====FUNCS=====
 	//======80======
@@ -155,7 +151,8 @@ typedef enum {
 	ARG1_ERROR,
 	ARG2_ERROR,
 	DSTACK_NF,
-	DSTACK_TG
+	DSTACK_TG,
+	LABEL_AGAIN
 
 } error_type;
 

@@ -122,37 +122,27 @@ OP_DSTACK	45		-		.stack	integer
 
 	LABELS
 	
-OP_JMP_1	50		-		jmp	integer
-OP_JMP_2	51		-		jmp	[integer]
+OP_JMP		50		-		jmp	integer
 	
-OP_JE_1		52		-		je	integer
-OP_JE_2		53		-		je	[integer]
+OP_JE			51		-		je	integer
 
-OP_JNE_1	54		-		jne	integer
-OP_JNE_2	55		-		jne	[integer]
+OP_JNE		52		-		jne	integer
 
-OP_JB_1		56		-		jb	integer
-OP_JB_2		57		-		jb	[integer]
-OP_JL_1		58		-		jl	integer
-OP_JL_2		59		-		jl	[integer]
+OP_JB			53		-		jb	integer
+OP_JL			54		-		jl	integer
 
-OP_JBE_1	60		-		jbe	integer
-OP_JBE_2	61		-		jbe	[integer]
-OP_JLE_1	62		-		jle	integer
-OP_JLE_2	63		-		jle	[integer]
+OP_JBE		55		-		jbe	integer
+OP_JLE		56		-		jle	integer
 
-OP_JNB_1	64		-		jnb	integer
-OP_JNB_2	65		-		jnb	[integer]
-OP_JNL_1	66		-		jnl	integer
-OP_JNL_2	67		-		jnl	[integer]
+OP_JNB		57		-		jnb	integer
+OP_JNL		58		-		jnl	integer
 
-OP_CMP_1	68		-		cmp	reg,		reg
-OP_CMP_2	69		-		cmp	reg,		integer
-OP_CMP_3	70		-		cmp	reg,		[reg]
+OP_CMP_1	59		-		cmp	reg,		reg
+OP_CMP_2	60		-		cmp	reg,		integer
 
 	INTERRUPT
 
-OP_INT		75		- 		int 	integer
+OP_INT		70		- 		int 	integer
 
 	FUNCS
 	

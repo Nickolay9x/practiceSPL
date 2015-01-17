@@ -142,12 +142,14 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 	size_t i, j;
 
-	size_t n_line;
-	size_t counter;
+	short n_line;
+	unsigned short counter;
 
 	size_t check_args;
 
 	list *current_line;
+
+	label_list *labels;
 
 	unsigned char flag, stack;
 
@@ -161,15 +163,45 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 	current_line = (*head);
 
+	labels = NULL;
+
 	flag = 0;
 	stack = 1;
 
 	//===============================
 
+	//=======FIRST ITERRATION========
+	//==============LABELS===========
+
+	while(current_line) {
+		
+		n_line++;
+
+		if(!current_line->arg1 && !current_line->arg2) {
+
+			if(is_label(current_line->cmd)) {
+
+				add_new_label(current_line->cmd, n_line, &labels);
+
+			}
+
+		}
+
+		current_line = current_line->next;
+
+	}
+
+	//===============================
+
+	n_line = 0;
+
+	current_line = (*head);
+
+	//=======SECOND ITERRATION=======
+
 	while(current_line) {
 
 		n_line++;
-
 		//============.STACK=============
 
 		if(!strcmp(current_line->cmd, ".stack") && (n_line == 1)) {
@@ -550,7 +582,49 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 		//==================================
 		//==============LABELS==============
 
+		//=============LABEL=============
+
+		if((!current_line->arg1 && !current_line->arg2) && is_label(current_line->cmd)) {
+
+			check_args = find_label(current_line->cmd, &labels);
+
+			translate_label(&current_line, bcode_array, &counter, check_args, n_line, &flag, &labels);
+
+			current_line = current_line->next;
+			continue;
+
+		}
+
+		//===============================
+		//=============JMP===============
+
 		//LATER
+
+		//=============CMP===============
+
+		if(!strcmp(current_line->cmd, "cmp")) {
+
+			if(current_line->arg2) {
+
+				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
+
+				translate_cmp(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
 
 		//==================================
 		//=============INTERRUPT============
@@ -697,6 +771,8 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 		//===============================
 
 	}
+
+	clean_label_list(&labels);
 
 	return (flag == 1) ? ERROR : 0;
 

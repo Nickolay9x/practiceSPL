@@ -3,6 +3,7 @@
 #include <string.h>
 #include <malloc.h>
 #include "header.h"
+#include "translater.h"
 
 //=======FUNCS TO CHECK LEXEMS=========
 
@@ -83,7 +84,7 @@ unsigned short is_memory(char *addr) {
 
 //==1, 2, 5, 6, 7 CORRECT COMBINATION==
 
-size_t check_one_argument(char* arg1, char* arg2) {
+size_t check_one_argument(char* arg1) {
 
 	if(is_reg(arg1)) return 1;
 	if(is_number(arg1) && ((unsigned int)atoi(arg1) < 65536)) return 2;
@@ -201,34 +202,38 @@ unsigned char get_addr_code(char *addr) {
 
 //=======FUNC TO PRINT ERRORS==========
 
-void error(size_t code, size_t line, char *lexeme) {
+void error(size_t code, short line, char *lexeme) {
 
 	switch(code) {
 
-	case 2:
+	case CMD_ERROR:
 		printf("ERROR:\tUNKNOWN COMMAND %s at (%d) line\n", lexeme, line);
 		break;
 
-	case 3:
+	case ARG1_ERROR:
 		if(!lexeme)
 			printf("ERROR:\tILLEGAL AGRUMENT 1 EMPTY at (%d) line\n", line);
 		else
 			printf("ERROR:\tILLEGAL AGRUMENT 1 %s at (%d) line\n", lexeme, line);
 		break;
 
-	case 4:
+	case ARG2_ERROR:
 		if(!lexeme)
 			printf("ERROR:\tILLEGAL AGRUMENT 2 EMPTY at (%d) line\n", line);
 		else
 			printf("ERROR:\tILLEGAL AGRUMENT 2 %s at (%d) line\n", lexeme, line);
 		break;
 
-	case 5:
+	case DSTACK_NF:
 		printf("WARNING: STACK NOT DECLARE. DEFAULT VALUE: 250\n");
 		break;
 
-	case 6:
+	case DSTACK_TG:
 		printf("WARNING: STACK CAN NOT BE MORE THAN 64 000. NOW DEFAULT VALUE: 250\n");
+		break;
+
+	case LABEL_AGAIN:
+		printf("ERROR: %s LABEL HAS ALREADY TRANSLATED AND USED EARLY. (%d)\n", lexeme, line);
 		break;
 
 	}
@@ -237,29 +242,35 @@ void error(size_t code, size_t line, char *lexeme) {
 
 //=======FUNCS TO PUT OPCODES==========
 
-void put_opc_cmd(unsigned char code, unsigned char **bcode_array, size_t *iter) {
+void put_opc_cmd(unsigned char code, unsigned char **bcode_array, unsigned short *iter) {
 
 	(*bcode_array)[*iter] = code;
 	(*iter)++;
 
 }
 
-void put_opc_reg(char *reg, unsigned char **bcode_array, size_t *iter) {
+void put_opc_reg(char *reg, unsigned char **bcode_array, unsigned short *iter) {
 
 	(*bcode_array)[*iter] = get_reg_code(reg);
 	(*iter)++;
 
 }
 
-void put_opc_num_16(char *num, unsigned char **bcode_array, size_t *iter) {
+void put_opc_num_8(char *num, unsigned char **bcode_array, unsigned short *iter) {
 
-	unsigned short a = atoi(num);
+	(*bcode_array)[*iter] = (char)atoi(num);
+	(*iter)++;
+
+}
+
+void put_opc_num_16(char *num, unsigned char **bcode_array, unsigned short *iter) {
+
 	*((unsigned short*)(*bcode_array + *iter)) = (unsigned short)atoi(num);
 	(*iter) += 2;
 
 }
 
-void put_opc_num_32(char *num, unsigned char **bcode_array, size_t *iter) {
+void put_opc_num_32(char *num, unsigned char **bcode_array, unsigned short *iter) {
 
 	int a = atoi(num);
 	*((int*)(*bcode_array + *iter)) = atoi(num);
@@ -267,7 +278,7 @@ void put_opc_num_32(char *num, unsigned char **bcode_array, size_t *iter) {
 
 }
 
-void put_opc_addr(char *addr, unsigned char **bcode_array, size_t *iter) {
+void put_opc_addr(char *addr, unsigned char **bcode_array, unsigned short *iter) {
 
 	(*bcode_array)[*iter] = get_addr_code(addr);
 	(*iter)++;
@@ -276,7 +287,7 @@ void put_opc_addr(char *addr, unsigned char **bcode_array, size_t *iter) {
 
 //====FUNCS TO TRANSLATE COMMANDS======
 
-void translate_dstack(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_dstack(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
@@ -309,7 +320,7 @@ void translate_dstack(list **cur_line, unsigned char **bcode_array, size_t *num,
 
 }
 
-void translate_mov(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_mov(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
@@ -364,7 +375,7 @@ void translate_mov(list **cur_line, unsigned char **bcode_array, size_t *num, si
 
 }
 
-void translate_add(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_add(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
@@ -421,7 +432,7 @@ void translate_add(list **cur_line, unsigned char **bcode_array, size_t *num, si
 
 }
 
-void translate_sub(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_sub(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
@@ -478,7 +489,7 @@ void translate_sub(list **cur_line, unsigned char **bcode_array, size_t *num, si
 
 }
 
-void translate_mul(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_mul(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
@@ -516,7 +527,7 @@ void translate_mul(list **cur_line, unsigned char **bcode_array, size_t *num, si
 
 }
 
-void translate_div(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_div(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
@@ -554,7 +565,7 @@ void translate_div(list **cur_line, unsigned char **bcode_array, size_t *num, si
 
 }
 
-void translate_inc(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_inc(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
@@ -582,7 +593,7 @@ void translate_inc(list **cur_line, unsigned char **bcode_array, size_t *num, si
 
 }
 
-void translate_dec(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_dec(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
@@ -610,7 +621,7 @@ void translate_dec(list **cur_line, unsigned char **bcode_array, size_t *num, si
 
 }
 
-void translate_ror(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_ror(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
@@ -634,7 +645,7 @@ void translate_ror(list **cur_line, unsigned char **bcode_array, size_t *num, si
 
 }
 
-void translate_rol(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_rol(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
@@ -658,7 +669,7 @@ void translate_rol(list **cur_line, unsigned char **bcode_array, size_t *num, si
 
 }
 
-void translate_shr(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_shr(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
@@ -682,7 +693,7 @@ void translate_shr(list **cur_line, unsigned char **bcode_array, size_t *num, si
 
 }
 
-void translate_shl(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_shl(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
@@ -706,7 +717,7 @@ void translate_shl(list **cur_line, unsigned char **bcode_array, size_t *num, si
 
 }
 
-void translate_push(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_push(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
@@ -743,7 +754,7 @@ void translate_push(list **cur_line, unsigned char **bcode_array, size_t *num, s
 
 }
 
-void translate_pop(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_pop(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
@@ -780,15 +791,104 @@ void translate_pop(list **cur_line, unsigned char **bcode_array, size_t *num, si
 
 }
 
+void translate_label(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag, label_list **labels) {
+
+	label_list *iterator = (*labels);
+	char *temp = (char*)malloc(15);
+
+	switch(code) {
+
+	case 0:
+		error(LABEL_AGAIN, line, (*cur_line)->cmd);
+		(*flag) = ERROR;
+		break;
+
+	default:
+		while(iterator) {
+
+			if(!strcmp(iterator->label.name, (*cur_line)->cmd) && !iterator->label.translated) {
+
+				iterator->label.addr = (*num);
+				iterator->label.translated = 1;
+				put_opc_cmd(OP_LABEL, bcode_array, num);
+				_itoa_s(iterator->label.addr, temp, 15, 10);
+				put_opc_num_16(temp, bcode_array, num);
+				break;
+
+			}
+
+			iterator = iterator->next;
+
+		}
+
+	}
+
+}
+
 //LATER JMP
 
-void translate_int(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_cmp(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
+
+	switch(code) {
+
+	case 1:
+		put_opc_cmd(OP_CMP_1, bcode_array, num);
+		put_opc_reg((*cur_line)->arg1, bcode_array, num);
+		put_opc_reg((*cur_line)->arg2, bcode_array, num);
+		break;
+
+	case 2:
+		put_opc_cmd(OP_CMP_2, bcode_array, num);
+		put_opc_reg((*cur_line)->arg1, bcode_array, num);
+		
+		if(strlen((*cur_line)->arg1) == 2) {
+
+			put_opc_num_16((*cur_line)->arg2, bcode_array, num);
+
+		} else {
+
+			put_opc_num_32((*cur_line)->arg2, bcode_array, num);
+
+		}
+
+		break;
+
+	case 3:
+		error(ARG1_ERROR, line, (*cur_line)->arg1);
+		(*flag) = ERROR;
+		break;
+
+	case 4:
+		error(ARG2_ERROR, line, (*cur_line)->arg2);
+		(*flag) = ERROR;
+		break;
+
+	case 5:
+		error(ARG2_ERROR, line, (*cur_line)->arg2);
+		(*flag) = ERROR;
+		break;
+
+	case 6:
+		error(ARG1_ERROR, line, (*cur_line)->arg1);
+		(*flag) = ERROR;
+		break;
+
+	case 7:
+		error(ARG1_ERROR, line, (*cur_line)->arg1);
+		(*flag) = ERROR;
+		break;
+
+	}
+
+}
+
+void translate_int(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
 	case 2:
 
-		if(atoi((*cur_line)->arg1) > 255) {
+		if((atoi((*cur_line)->arg1) > 255) || (atoi((*cur_line)->arg1) < 1)) {
 
 			error(ARG1_ERROR, line, (*cur_line)->arg1);
 			(*flag) = ERROR;
@@ -797,7 +897,7 @@ void translate_int(list **cur_line, unsigned char **bcode_array, size_t *num, si
 		}
 
 		put_opc_cmd(OP_INT, bcode_array, num);
-		put_opc_num_16((*cur_line)->arg1, bcode_array, num);
+		put_opc_num_8((*cur_line)->arg1, bcode_array, num);
 		break;
 
 	default:
@@ -811,7 +911,7 @@ void translate_int(list **cur_line, unsigned char **bcode_array, size_t *num, si
 
 //LATER FUNCS
 
-void translate_and(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_and(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
@@ -867,7 +967,7 @@ void translate_and(list **cur_line, unsigned char **bcode_array, size_t *num, si
 
 }
 
-void translate_or(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_or(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
@@ -923,7 +1023,7 @@ void translate_or(list **cur_line, unsigned char **bcode_array, size_t *num, siz
 
 }
 
-void translate_xor(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_xor(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 
@@ -979,7 +1079,7 @@ void translate_xor(list **cur_line, unsigned char **bcode_array, size_t *num, si
 
 }
 
-void translate_not(list **cur_line, unsigned char **bcode_array, size_t *num, size_t code, size_t line, unsigned char *flag) {
+void translate_not(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
 	switch(code) {
 

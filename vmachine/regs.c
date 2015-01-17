@@ -4,7 +4,7 @@
 
 //Init registers name and codes
 
-void init_regs(reg32 **gpr, reg16 *ip, reg32 *esp) {
+void init_regs(reg32 **gpr, reg16 *ip) {
 
 	// General Purpose Registers
 
