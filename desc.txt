@@ -121,24 +121,26 @@ OP_POP_2	44		-		pop	[reg]
 OP_DSTACK	45		-		.stack	integer
 
 	LABELS
+
+OP_LABEL	50		-		label:
 	
-OP_JMP		50		-		jmp	integer
+OP_JMP		51		-		jmp	label
 	
-OP_JE			51		-		je	integer
+OP_JE		52		-		je	label
 
-OP_JNE		52		-		jne	integer
+OP_JNE		53		-		jne	label
 
-OP_JB			53		-		jb	integer
-OP_JL			54		-		jl	integer
+OP_JB		54		-		jb	label
+OP_JL		55		-		jl	label
 
-OP_JBE		55		-		jbe	integer
-OP_JLE		56		-		jle	integer
+OP_JBE		56		-		jbe	label
+OP_JLE		57		-		jle	label
 
-OP_JNB		57		-		jnb	integer
-OP_JNL		58		-		jnl	integer
+OP_JNB		58		-		jnb	label
+OP_JNL		59		-		jnl	label
 
-OP_CMP_1	59		-		cmp	reg,		reg
-OP_CMP_2	60		-		cmp	reg,		integer
+OP_CMP_1	60		-		cmp	reg,		reg
+OP_CMP_2	61		-		cmp	reg,		integer
 
 	INTERRUPT
 
@@ -165,3 +167,12 @@ OP_XOR_2	97		-		xor	reg,		integer
 OP_XOR_3	98		-		xor	reg,		[reg]
 
 OP_NOT		99		-		not	reg
+
+ERROR CODES:
+ERROR		1 		-		RETURN FROM analysis IF THERE IS ONE OR MORE ERROR OR WARNING
+CMD_ERROR	2		-		IF UNKNOWN COMMAND
+ARG1_ERROR	3		-		IF INCORRECT FIRST ARGUMENT
+ARG2_ERROR	4		-		IF INCORRECT SECOND ARGUMENT
+DSTACK_NF	5		-		IF COMMAND .stack NOT FOUND
+DSTACK_TG	6		-		IF COMMAND .stack integer > 64 000
+LABEL_AGAIN	7		-		IF ONE LABEL USED MORE THAN ONE TIME
