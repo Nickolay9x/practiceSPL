@@ -148,9 +148,8 @@ OP_INT		70		- 		int 	integer
 
 	FUNCS
 	
-OP_CALL_1	80		-		call	integer
-OP_CALL_2	81		-		call	[integer]
-OP_RET		82		-		ret
+OP_CALL_1	80		-		call	label
+OP_RET		81		-		ret
 
 	LOGIC
 	
@@ -176,3 +175,4 @@ ARG2_ERROR	4		-		IF INCORRECT SECOND ARGUMENT
 DSTACK_NF	5		-		IF COMMAND .stack NOT FOUND
 DSTACK_TG	6		-		IF COMMAND .stack integer > 64 000
 LABEL_AGAIN	7		-		IF ONE LABEL USED MORE THAN ONE TIME
+LABEL_NF 8 - IF LABEL NOT FOUND TO MAKE A JUMP

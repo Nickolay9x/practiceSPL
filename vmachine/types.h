@@ -115,8 +115,7 @@ typedef enum {
 	//====FUNCS=====
 	//======80======
 
-	OP_CALL_1 = 80,
-	OP_CALL_2,
+	OP_CALL = 80,
 	OP_RET,
 
 	//====LOGIC=====
@@ -152,7 +151,8 @@ typedef enum {
 	ARG2_ERROR,
 	DSTACK_NF,
 	DSTACK_TG,
-	LABEL_AGAIN
+	LABEL_AGAIN,
+	LABEL_NF
 
 } error_type;
 

@@ -26,6 +26,8 @@ size_t add_new_label(char *label_name, short address, label_list **head);
 
 short find_label(char *label_name, label_list **head);
 
+short get_label_addr(char *label_name, label_list **head);
+
 void clean_label_list(label_list **head);
 
 #endif

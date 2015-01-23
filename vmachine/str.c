@@ -4,6 +4,110 @@
 #include "str.h"
 #include "translater.h"
 
+short get_size_of_string(list **cur_line) {
+
+	short count = 0;
+
+	if(!strcmp((*cur_line)->cmd, "ret"))
+		return 1;
+
+	if(!strcmp((*cur_line)->cmd, ".stack"))
+		return 2;
+
+	if(!strcmp((*cur_line)->cmd, "int"))
+		return 2;
+
+	if((*cur_line)->cmd)
+		count++;
+
+	if((*cur_line)->arg1) {
+
+		if(is_reg((*cur_line)->arg1)) {
+		
+			count++;
+
+			if(strlen((*cur_line)->arg1) == 2) {
+
+				if((*cur_line)->arg2) {
+				
+					if(is_reg((*cur_line)->arg2) || is_memory((*cur_line)->arg2)) {
+		
+						count++;
+
+					}
+
+					if(is_number((*cur_line)->arg2)) {
+
+						count += 2;
+
+					}
+
+				}
+
+				return count;
+
+			} else {
+
+				if((*cur_line)->arg2) {
+
+					if(is_reg((*cur_line)->arg2) || is_memory((*cur_line)->arg2)) {
+		
+						count++;
+
+					}
+
+					if(is_number((*cur_line)->arg2)) {
+
+						count += 4;
+
+					}
+
+				}
+
+				return count;
+
+			}
+
+		}
+
+		if(is_number((*cur_line)->arg1)) {
+			
+			count+=4;
+			return count;
+
+		}
+
+		if(is_memory((*cur_line)->arg1)) {
+			
+			count++;
+			if((*cur_line)->arg1) {
+
+				return (is_reg((*cur_line)->arg2)) ? count + 1 : 0;
+
+			} else {
+
+				return count;
+
+			}
+
+		}
+
+		if(!(*cur_line)->arg2) {
+
+			count += 2;
+
+		}
+
+		return count;
+
+	} else {
+
+		return count;
+
+	}
+
+}
+
 void tolower_case(char *str) {
 
 	size_t len, i;
@@ -153,6 +257,8 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 	unsigned char flag, stack;
 
+	char *temp;
+
 	//===============================
 
 	//==========INITIALIZE===========
@@ -175,13 +281,20 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 	while(current_line) {
 		
-		n_line++;
+		if(current_line->cmd) {
 
-		if(!current_line->arg1 && !current_line->arg2) {
+			if(!current_line->arg1 && !current_line->arg2 && strcmp(current_line->cmd, "ret")) {
 
-			if(is_label(current_line->cmd)) {
+				if(is_label(current_line->cmd)) {
 
-				add_new_label(current_line->cmd, n_line, &labels);
+					if(add_new_label(current_line->cmd, counter, &labels))
+						counter += 3;
+
+				}
+
+			} else {
+
+				counter += get_size_of_string(&current_line);
 
 			}
 
@@ -193,7 +306,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 	//===============================
 
-	n_line = 0;
+	counter = 0;
 
 	current_line = (*head);
 
@@ -598,8 +711,328 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 		//===============================
 		//=============JMP===============
 
-		//LATER
+		if(!strcmp(current_line->cmd, "jmp")) {
 
+			if(!current_line->arg2) {
+
+				temp = (char*)malloc(strlen(current_line->arg1)+1);
+
+				for(i = 0; i < strlen(current_line->arg1); i++) {
+
+					temp[i] = current_line->arg1[i];
+
+				}
+
+				temp[i] = 58; // :
+				temp[i + 1] = 0; // \0
+
+				check_args = get_label_addr(temp, &labels);
+
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JMP);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+		//=============JE================
+
+		if(!strcmp(current_line->cmd, "je")) {
+
+			if(!current_line->arg2) {
+
+				temp = (char*)malloc(strlen(current_line->arg1)+1);
+
+				for(i = 0; i < strlen(current_line->arg1); i++) {
+
+					temp[i] = current_line->arg1[i];
+
+				}
+
+				temp[i] = 58; // :
+				temp[i + 1] = 0; // \0
+
+				check_args = get_label_addr(temp, &labels);
+
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JE);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+		//=============JNE===============
+
+		if(!strcmp(current_line->cmd, "jne")) {
+
+			if(!current_line->arg2) {
+
+				temp = (char*)malloc(strlen(current_line->arg1)+1);
+
+				for(i = 0; i < strlen(current_line->arg1); i++) {
+
+					temp[i] = current_line->arg1[i];
+
+				}
+
+				temp[i] = 58; // :
+				temp[i + 1] = 0; // \0
+
+				check_args = get_label_addr(temp, &labels);
+
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JNE);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+		//=============JB================
+
+		if(!strcmp(current_line->cmd, "jb")) {
+
+			if(!current_line->arg2) {
+
+				temp = (char*)malloc(strlen(current_line->arg1)+1);
+
+				for(i = 0; i < strlen(current_line->arg1); i++) {
+
+					temp[i] = current_line->arg1[i];
+
+				}
+
+				temp[i] = 58; // :
+				temp[i + 1] = 0; // \0
+
+				check_args = get_label_addr(temp, &labels);
+
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JB);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+		//=============JL================
+
+		if(!strcmp(current_line->cmd, "jl")) {
+
+			if(!current_line->arg2) {
+
+				temp = (char*)malloc(strlen(current_line->arg1)+1);
+
+				for(i = 0; i < strlen(current_line->arg1); i++) {
+
+					temp[i] = current_line->arg1[i];
+
+				}
+
+				temp[i] = 58; // :
+				temp[i + 1] = 0; // \0
+
+				check_args = get_label_addr(temp, &labels);
+
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JL);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+		//=============JBE===============
+
+		if(!strcmp(current_line->cmd, "jbe")) {
+
+			if(!current_line->arg2) {
+
+				temp = (char*)malloc(strlen(current_line->arg1)+1);
+
+				for(i = 0; i < strlen(current_line->arg1); i++) {
+
+					temp[i] = current_line->arg1[i];
+
+				}
+
+				temp[i] = 58; // :
+				temp[i + 1] = 0; // \0
+
+				check_args = get_label_addr(temp, &labels);
+
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JBE);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+		//=============JLE===============
+
+		if(!strcmp(current_line->cmd, "jle")) {
+
+			if(!current_line->arg2) {
+
+				temp = (char*)malloc(strlen(current_line->arg1)+1);
+
+				for(i = 0; i < strlen(current_line->arg1); i++) {
+
+					temp[i] = current_line->arg1[i];
+
+				}
+
+				temp[i] = 58; // :
+				temp[i + 1] = 0; // \0
+
+				check_args = get_label_addr(temp, &labels);
+
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JLE);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+		//=============JNB===============
+
+		if(!strcmp(current_line->cmd, "jnb")) {
+
+			if(!current_line->arg2) {
+
+				temp = (char*)malloc(strlen(current_line->arg1)+1);
+
+				for(i = 0; i < strlen(current_line->arg1); i++) {
+
+					temp[i] = current_line->arg1[i];
+
+				}
+
+				temp[i] = 58; // :
+				temp[i + 1] = 0; // \0
+
+				check_args = get_label_addr(temp, &labels);
+
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JNB);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+		//=============JNL===============
+
+		if(!strcmp(current_line->cmd, "jnl")) {
+
+			if(!current_line->arg2) {
+
+				temp = (char*)malloc(strlen(current_line->arg1)+1);
+
+				for(i = 0; i < strlen(current_line->arg1); i++) {
+
+					temp[i] = current_line->arg1[i];
+
+				}
+
+				temp[i] = 58; // :
+				temp[i + 1] = 0; // \0
+
+				check_args = get_label_addr(temp, &labels);
+
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JNL);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
 		//=============CMP===============
 
 		if(!strcmp(current_line->cmd, "cmp")) {
@@ -653,8 +1086,66 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 		//==================================
 		//==============FUNCS===============
+		
+		//=============CALL==============
 
-		//LATER
+		if(!strcmp(current_line->cmd, "call")) {
+
+			if(!current_line->arg2) {
+
+				temp = (char*)malloc(strlen(current_line->arg1)+1);
+
+				for(i = 0; i < strlen(current_line->arg1); i++) {
+
+					temp[i] = current_line->arg1[i];
+
+				}
+
+				temp[i] = 58; // :
+				temp[i + 1] = 0; // \0
+
+				check_args = get_label_addr(temp, &labels);
+
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_CALL);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG2_ERROR, n_line, current_line->arg2);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
+		//=============RET===============
+		
+		if(!strcmp(current_line->cmd, "ret")) {
+
+			if(!current_line->arg1) {
+
+				translate_ret(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+
+				current_line = current_line->next;
+				continue;
+
+			} else {
+
+				error(ARG1_ERROR, n_line, current_line->arg1);
+				flag = ERROR;
+				current_line = current_line->next;
+				continue;
+
+			}
+
+		}
+
+		//===============================
 
 		//==================================
 		//===============LOGIC==============

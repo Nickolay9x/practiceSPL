@@ -236,6 +236,10 @@ void error(size_t code, short line, char *lexeme) {
 		printf("ERROR: %s LABEL HAS ALREADY TRANSLATED AND USED EARLY. (%d)\n", lexeme, line);
 		break;
 
+	case LABEL_NF:
+		printf("ERROR: %s LABEL IS NOT FOUND. (%d)\n", lexeme, line);
+		break;
+
 	}
 
 }
@@ -500,16 +504,7 @@ void translate_mul(list **cur_line, unsigned char **bcode_array, unsigned short 
 
 	case 2:
 		put_opc_cmd(OP_MUL_2, bcode_array, num);
-		
-		if(strlen((*cur_line)->arg1) == 2) {
-
-			put_opc_num_16((*cur_line)->arg2, bcode_array, num);
-
-		} else {
-
-			put_opc_num_32((*cur_line)->arg2, bcode_array, num);
-
-		}
+		put_opc_num_32((*cur_line)->arg1, bcode_array, num);
 
 		break;
 
@@ -538,17 +533,7 @@ void translate_div(list **cur_line, unsigned char **bcode_array, unsigned short 
 
 	case 2:
 		put_opc_cmd(OP_DIV_2, bcode_array, num);
-		
-		if(strlen((*cur_line)->arg1) == 2) {
-
-			put_opc_num_16((*cur_line)->arg2, bcode_array, num);
-
-		} else {
-
-			put_opc_num_32((*cur_line)->arg2, bcode_array, num);
-
-		}
-
+		put_opc_num_32((*cur_line)->arg1, bcode_array, num);
 		break;
 
 	case 3:
@@ -808,7 +793,6 @@ void translate_label(list **cur_line, unsigned char **bcode_array, unsigned shor
 
 			if(!strcmp(iterator->label.name, (*cur_line)->cmd) && !iterator->label.translated) {
 
-				iterator->label.addr = (*num);
 				iterator->label.translated = 1;
 				put_opc_cmd(OP_LABEL, bcode_array, num);
 				_itoa_s(iterator->label.addr, temp, 15, 10);
@@ -825,7 +809,37 @@ void translate_label(list **cur_line, unsigned char **bcode_array, unsigned shor
 
 }
 
-//LATER JMP
+void translate_jmp(char *lbl_name, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag, label_list **labels, char op_code) {
+
+	label_list *iterator = (*labels);
+	char *temp = (char*)malloc(15);
+
+	switch(code) {
+
+	case 0:
+		error(LABEL_NF, line, lbl_name);
+		(*flag) = ERROR;
+		break;
+
+	default:
+		while(iterator) {
+
+			if(!strcmp(iterator->label.name, lbl_name)) {
+
+				put_opc_cmd(op_code, bcode_array, num);
+				_itoa_s(iterator->label.addr, temp, 15, 10);
+				put_opc_num_16(temp, bcode_array, num);
+				break;
+
+			}
+
+			iterator = iterator->next;
+
+		}
+
+	}
+
+}
 
 void translate_cmp(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 
@@ -909,7 +923,11 @@ void translate_int(list **cur_line, unsigned char **bcode_array, unsigned short 
 
 }
 
-//LATER FUNCS
+void translate_ret(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
+
+	put_opc_cmd(OP_RET, bcode_array, num);
+
+}
 
 void translate_and(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag) {
 

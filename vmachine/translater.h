@@ -68,29 +68,8 @@ void translate_label(list **cur_line, unsigned char **bcode_array, unsigned shor
 
 //===============JUMP==================
 
-void translate_jmp(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag);
+void translate_jmp(char *lbl_name, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag, label_list **labels, char op_code);
 
-//============  = or != ===============
-
-void translate_je(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag);
-void translate_jne(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag);
-
-//============  > or < ================
-
-void translate_jb(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag);
-void translate_jl(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag);
-
-//===========  >= or <= ===============
-
-void translate_jbe(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag);
-void translate_jle(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag);
-
-//===========  !> or !< ===============
-
-void translate_jnb(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag);
-void translate_jnl(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag);
-
-//=====================================
 //==============COMPARE================
 
 void translate_cmp(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag);
@@ -101,7 +80,6 @@ void translate_int(list **cur_line, unsigned char **bcode_array, unsigned short 
 
 //===============FUNCS=================
 
-void translate_call(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag);
 void translate_ret(list **cur_line, unsigned char **bcode_array, unsigned short *num, size_t code, short line, unsigned char *flag);
 
 //===============LOGIC=================

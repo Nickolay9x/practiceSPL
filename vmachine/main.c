@@ -78,11 +78,11 @@ int main(int argc, char** argv) {
 
 	printf("\nAnalys result: %d\n", analysis(&head, &bcode_array));
 
-	for(i = 0; i < 60; i++)
-		printf("%d ", bcode_array[i]);
+	/*for(i = 0; i < 60; i++)
+		printf("%d ", bcode_array[i]);*/
 
 	// 0 - Everything OKEY
-	// 1 - One or more lines have errors
+	// 1 - One or more lines had error
 
 	clean(&head);
 	_getch(); //temporary

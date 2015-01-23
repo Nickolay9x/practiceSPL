@@ -38,6 +38,23 @@ short find_label(char *label_name, label_list **head) {
 
 }
 
+short get_label_addr(char *label_name, label_list **head) {
+
+	label_list *iterator = (*head);
+
+	while(iterator) {
+
+		if(!strcmp(iterator->label.name, label_name))
+			return iterator->label.addr;
+
+		iterator = iterator->next;
+
+	}
+
+	return 0;
+
+}
+
 size_t add_new_label(char *label_name, short address, label_list **head) {
 
 	label_list *iterator = (*head);
