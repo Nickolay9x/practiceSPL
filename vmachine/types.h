@@ -1,6 +1,7 @@
 #ifndef H_TYPES
 #define H_TYPES
 #define BCODE_SIZE 5000
+#define BCODE_FILE "main"
 
 typedef enum {
 
@@ -66,7 +67,6 @@ typedef enum {
 
 	OP_POP_1,
 	OP_POP_2,
-	OP_DSTACK,
 
 	//=====LABEL====
 	//======50======
@@ -107,6 +107,11 @@ typedef enum {
 	OP_CMP_1,
 	OP_CMP_2,
 
+	//==MAIN LABEL==
+	//======62======
+
+	OP_MAIN,
+
 	//==INTERRUPT===
 	//======70======
 
@@ -139,7 +144,12 @@ typedef enum {
 
 	//======99======
 
-	OP_NOT
+	OP_NOT,
+	
+	//======100=====
+
+	OP_DSTACK,
+	OP_DCODE,
 
 } op_type;
 
@@ -152,7 +162,10 @@ typedef enum {
 	DSTACK_NF,
 	DSTACK_TG,
 	LABEL_AGAIN,
-	LABEL_NF
+	LABEL_NF,
+	DCODE_NF,
+	DCODE_AGAIN,
+	MAIN_NF
 
 } error_type;
 

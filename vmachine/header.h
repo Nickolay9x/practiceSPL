@@ -6,7 +6,7 @@
 
 //File with asm code
 
-FILE* input;
+FILE* input_file;
 
 //Byte code array
 

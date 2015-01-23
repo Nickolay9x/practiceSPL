@@ -225,19 +225,31 @@ void error(size_t code, short line, char *lexeme) {
 		break;
 
 	case DSTACK_NF:
-		printf("WARNING: STACK NOT DECLARE. DEFAULT VALUE: 250\n");
+		printf("WARNING:\tSTACK NOT DECLARE. DEFAULT VALUE: 250\n");
 		break;
 
 	case DSTACK_TG:
-		printf("WARNING: STACK CAN NOT BE MORE THAN 64 000. NOW DEFAULT VALUE: 250\n");
+		printf("WARNING:\tSTACK CAN NOT BE MORE THAN 64 000. NOW DEFAULT VALUE: 250\n");
 		break;
 
 	case LABEL_AGAIN:
-		printf("ERROR: %s LABEL HAS ALREADY TRANSLATED AND USED EARLY. (%d)\n", lexeme, line);
+		printf("ERROR:\t%s LABEL HAS ALREADY TRANSLATED AND USED EARLY. (%d)\n", lexeme, line);
 		break;
 
 	case LABEL_NF:
-		printf("ERROR: %s LABEL IS NOT FOUND. (%d)\n", lexeme, line);
+		printf("ERROR:\t%s LABEL IS NOT FOUND. (%d)\n", lexeme, line);
+		break;
+
+	case DCODE_NF:
+		printf("ERROR:\tCODE SEGMENT NOT FOUND\n");
+		break;
+
+	case DCODE_AGAIN:
+		printf("ERROR:\tTOO MANY CODE SEGMENTS DECLARED. (%d)\n", line);
+		break;
+
+	case MAIN_NF:
+		printf("ERROR:\tCAN'T FIND MAIN LABEL TO START PROGRAM\n");
 		break;
 
 	}
@@ -794,7 +806,17 @@ void translate_label(list **cur_line, unsigned char **bcode_array, unsigned shor
 			if(!strcmp(iterator->label.name, (*cur_line)->cmd) && !iterator->label.translated) {
 
 				iterator->label.translated = 1;
-				put_opc_cmd(OP_LABEL, bcode_array, num);
+
+				if(!strcmp((*cur_line)->cmd, "main:")) {
+
+					put_opc_cmd(OP_MAIN, bcode_array, num);
+
+				} else {
+
+					put_opc_cmd(OP_LABEL, bcode_array, num);
+
+				}
+					
 				_itoa_s(iterator->label.addr, temp, 15, 10);
 				put_opc_num_16(temp, bcode_array, num);
 				break;

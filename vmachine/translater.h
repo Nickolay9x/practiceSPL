@@ -26,6 +26,7 @@ void error(size_t code, short line, char *lexeme);
 
 void put_opc_cmd(unsigned char code, unsigned char **bcode_array, unsigned short *iter);
 void put_opc_reg(char *reg, unsigned char **bcode_array, unsigned short *iter);
+void put_opc_num_8(char *num, unsigned char **bcode_array, unsigned short *iter);
 void put_opc_num_16(char *num, unsigned char **bcode_array, unsigned short *iter);
 void put_opc_num_32(char *num, unsigned char **bcode_array, unsigned short *iter);
 void put_opc_addr(char *addr, unsigned char **bcode_array, unsigned short *iter);

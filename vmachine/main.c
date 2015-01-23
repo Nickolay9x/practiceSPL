@@ -24,6 +24,9 @@ int main(int argc, char** argv) {
 
 	char *temp;
 	list *head; //list with all commands
+	unsigned short analys_code;
+
+	FILE *output_file;
 	
 	//===============================
 	
@@ -50,9 +53,9 @@ int main(int argc, char** argv) {
 
 	}
 
-	fopen_s(&input, argv[1], "r");
+	fopen_s(&input_file, argv[1], "r");
 
-	if(!input) {
+	if(!input_file) {
 
 		clean(&head);
 		printf("Where is your fu**in' asm file");
@@ -66,7 +69,7 @@ int main(int argc, char** argv) {
 	temp = (char*)malloc(sizeof(char));
 	i = 0;
 
-	while(fgets(temp, 40, input)) {
+	while(fgets(temp, 40, input_file)) {
 
 		if(strlen(temp) < 2) continue;
 
@@ -74,14 +77,26 @@ int main(int argc, char** argv) {
 
 	}
 
-	fclose(input);
+	fclose(input_file);
 
-	printf("\nAnalys result: %d\n", analysis(&head, &bcode_array));
+	analys_code = analysis(&head, &bcode_array);
 
-	/*for(i = 0; i < 60; i++)
+	printf("\nAnalys result: %d\n", analys_code);
+
+	if(analys_code != 1) {
+
+		fopen_s(&output_file, BCODE_FILE,"wb");
+
+		fwrite(bcode_array, sizeof(bcode_array[0]), analys_code, output_file);
+
+		fclose(output_file);
+
+	}
+
+	/*for(i = 0; i < analys_code; i++)
 		printf("%d ", bcode_array[i]);*/
 
-	// 0 - Everything OKEY
+	// !1 - Everything OKEY
 	// 1 - One or more lines had error
 
 	clean(&head);

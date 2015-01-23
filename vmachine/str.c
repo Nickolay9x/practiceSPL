@@ -11,6 +11,9 @@ short get_size_of_string(list **cur_line) {
 	if(!strcmp((*cur_line)->cmd, "ret"))
 		return 1;
 
+	if(!strcmp((*cur_line)->cmd, ".code"))
+		return 1;
+
 	if(!strcmp((*cur_line)->cmd, ".stack"))
 		return 2;
 
@@ -240,7 +243,7 @@ void parse(char *str, size_t length, list **head) {
 
 //Analysis commands
 
-unsigned char analysis(list **head, unsigned char **bcode_array) {
+unsigned short analysis(list **head, unsigned char **bcode_array) {
 
 	//============DATA SEG===========
 
@@ -255,7 +258,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 	label_list *labels;
 
-	unsigned char flag, stack;
+	unsigned char error_flag, stack_seg, code_seg, main_label;
 
 	char *temp;
 
@@ -271,8 +274,10 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 	labels = NULL;
 
-	flag = 0;
-	stack = 1;
+	error_flag = 0;
+	stack_seg = 0;
+	code_seg = 0;
+	main_label = 0;
 
 	//===============================
 
@@ -283,12 +288,16 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 		
 		if(current_line->cmd) {
 
-			if(!current_line->arg1 && !current_line->arg2 && strcmp(current_line->cmd, "ret")) {
+			if(!current_line->arg1 && !current_line->arg2) {
 
 				if(is_label(current_line->cmd)) {
 
 					if(add_new_label(current_line->cmd, counter, &labels))
 						counter += 3;
+
+				} else {
+
+					counter += get_size_of_string(&current_line);
 
 				}
 
@@ -319,13 +328,13 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 		if(!strcmp(current_line->cmd, ".stack") && (n_line == 1)) {
 
-			stack = 0;
+			stack_seg = 1;
 
 			if(!current_line->arg2) {
 
 				check_args = check_one_argument(current_line->arg1);
 
-				translate_dstack(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_dstack(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -333,7 +342,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 
 				error(DSTACK_NF, n_line, current_line->cmd);
 				put_opc_num_16("250", bcode_array, &counter);
@@ -345,11 +354,48 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 		} else {
 
-			if((n_line == 1) && (stack)) {
+			if((n_line == 1) && (!stack_seg)) {
 
 				error(DSTACK_NF, n_line, current_line->cmd);
 				put_opc_num_16("250", bcode_array, &counter);
+				stack_seg = 1;
 
+			}
+
+		}
+
+		//============.CODE=============
+
+		if(!strcmp(current_line->cmd, ".code") && (stack_seg)) {
+
+			if(!(current_line->arg1) ) {
+
+				if(!code_seg) {
+
+					code_seg = 1;
+					put_opc_num_8("101", bcode_array, &counter);
+
+					current_line = current_line->next;
+					continue;
+
+				} else {
+
+					error(DCODE_AGAIN, n_line, current_line->cmd);
+					error_flag = ERROR;
+
+					clean_label_list(&labels);
+					return ERROR;
+
+				}
+
+			} else {
+
+				error(ARG1_ERROR, n_line, current_line->arg2);
+				error_flag = ERROR;
+
+				clean_label_list(&labels);
+				return ERROR;
+				
 			}
 
 		}
@@ -363,7 +409,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
 
-				translate_mov(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_mov(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -371,7 +417,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -391,7 +437,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
 
-				translate_add(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_add(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -399,7 +445,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -416,7 +462,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
 
-				translate_sub(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_sub(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -424,7 +470,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -441,7 +487,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_one_argument(current_line->arg1);
 
-				translate_mul(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_mul(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -449,7 +495,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -466,7 +512,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_one_argument(current_line->arg1);
 
-				translate_div(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_div(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -474,7 +520,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -491,7 +537,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_one_argument(current_line->arg1);
 
-				translate_inc(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_inc(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -499,7 +545,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -516,7 +562,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_one_argument(current_line->arg1);
 
-				translate_dec(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_dec(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -524,7 +570,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -545,7 +591,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_two_arguments_shift(current_line->arg1, current_line->arg2);
 
-				translate_ror(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_ror(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -553,7 +599,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -570,7 +616,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_two_arguments_shift(current_line->arg1, current_line->arg2);
 
-				translate_rol(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_rol(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -578,7 +624,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -595,7 +641,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_two_arguments_shift(current_line->arg1, current_line->arg2);
 
-				translate_shr(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_shr(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -603,7 +649,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -620,7 +666,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_two_arguments_shift(current_line->arg1, current_line->arg2);
 
-				translate_shl(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_shl(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -628,7 +674,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -649,7 +695,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_one_argument(current_line->arg1);
 
-				translate_push(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_push(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -657,7 +703,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -674,7 +720,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_one_argument(current_line->arg1);
 
-				translate_pop(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_pop(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -682,7 +728,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -701,7 +747,10 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 			check_args = find_label(current_line->cmd, &labels);
 
-			translate_label(&current_line, bcode_array, &counter, check_args, n_line, &flag, &labels);
+			translate_label(&current_line, bcode_array, &counter, check_args, n_line, &error_flag, &labels);
+
+			if(!strcmp(current_line->cmd, "main:"))
+				main_label = 1;
 
 			current_line = current_line->next;
 			continue;
@@ -728,7 +777,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = get_label_addr(temp, &labels);
 
-				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JMP);
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &error_flag, &labels, OP_JMP);
 
 				current_line = current_line->next;
 				continue;
@@ -736,7 +785,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -764,7 +813,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = get_label_addr(temp, &labels);
 
-				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JE);
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &error_flag, &labels, OP_JE);
 
 				current_line = current_line->next;
 				continue;
@@ -772,7 +821,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -800,7 +849,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = get_label_addr(temp, &labels);
 
-				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JNE);
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &error_flag, &labels, OP_JNE);
 
 				current_line = current_line->next;
 				continue;
@@ -808,7 +857,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -836,7 +885,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = get_label_addr(temp, &labels);
 
-				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JB);
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &error_flag, &labels, OP_JB);
 
 				current_line = current_line->next;
 				continue;
@@ -844,7 +893,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -872,7 +921,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = get_label_addr(temp, &labels);
 
-				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JL);
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &error_flag, &labels, OP_JL);
 
 				current_line = current_line->next;
 				continue;
@@ -880,7 +929,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -908,7 +957,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = get_label_addr(temp, &labels);
 
-				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JBE);
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &error_flag, &labels, OP_JBE);
 
 				current_line = current_line->next;
 				continue;
@@ -916,7 +965,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -944,7 +993,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = get_label_addr(temp, &labels);
 
-				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JLE);
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &error_flag, &labels, OP_JLE);
 
 				current_line = current_line->next;
 				continue;
@@ -952,7 +1001,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -980,7 +1029,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = get_label_addr(temp, &labels);
 
-				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JNB);
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &error_flag, &labels, OP_JNB);
 
 				current_line = current_line->next;
 				continue;
@@ -988,7 +1037,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -1016,7 +1065,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = get_label_addr(temp, &labels);
 
-				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_JNL);
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &error_flag, &labels, OP_JNL);
 
 				current_line = current_line->next;
 				continue;
@@ -1024,7 +1073,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -1041,7 +1090,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
 
-				translate_cmp(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_cmp(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -1049,7 +1098,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -1068,7 +1117,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_one_argument(current_line->arg1);
 
-				translate_int(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_int(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -1076,7 +1125,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -1106,7 +1155,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = get_label_addr(temp, &labels);
 
-				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &flag, &labels, OP_CALL);
+				translate_jmp(temp, bcode_array, &counter, check_args, n_line, &error_flag, &labels, OP_CALL);
 
 				current_line = current_line->next;
 				continue;
@@ -1114,7 +1163,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -1129,7 +1178,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 			if(!current_line->arg1) {
 
-				translate_ret(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_ret(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -1137,7 +1186,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG1_ERROR, n_line, current_line->arg1);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -1158,7 +1207,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
 
-				translate_and(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_and(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -1166,7 +1215,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -1183,7 +1232,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
 
-				translate_or(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_or(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -1191,7 +1240,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -1208,7 +1257,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_two_arguments(current_line->arg1, current_line->arg2);
 
-				translate_xor(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_xor(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -1216,7 +1265,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -1233,7 +1282,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 				check_args = check_one_argument(current_line->arg1);
 
-				translate_not(&current_line, bcode_array, &counter, check_args, n_line, &flag);
+				translate_not(&current_line, bcode_array, &counter, check_args, n_line, &error_flag);
 
 				current_line = current_line->next;
 				continue;
@@ -1241,7 +1290,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 			} else {
 
 				error(ARG2_ERROR, n_line, current_line->arg2);
-				flag = ERROR;
+				error_flag = ERROR;
 				current_line = current_line->next;
 				continue;
 
@@ -1256,7 +1305,7 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 		//========UNKNOWN COMMAND========
 
 		error(CMD_ERROR, n_line, current_line->cmd);			
-		flag = ERROR;
+		error_flag = ERROR;
 		current_line = current_line->next;
 
 		//===============================
@@ -1265,6 +1314,20 @@ unsigned char analysis(list **head, unsigned char **bcode_array) {
 
 	clean_label_list(&labels);
 
-	return (flag == 1) ? ERROR : 0;
+	if(!code_seg) {
+
+		error(DCODE_NF, n_line, "empty string beasuse it doesn't mean");
+		error_flag = ERROR;
+
+	}
+
+	if(!main_label) {
+
+		error(MAIN_NF, n_line, "empty string beasuse it doesn't mean");
+		error_flag = ERROR;
+
+	}
+
+	return (error_flag == 1) ? ERROR : counter;
 
 }
