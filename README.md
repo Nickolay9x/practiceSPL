@@ -1,4 +1,5 @@
 # practiceSPL
-Try to create my own VM
+Now we can translate my mini f**** asm commands
+Full list in desc.txt
 
-Translator, then vm
+We need variables and print to file
