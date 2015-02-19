@@ -235,7 +235,7 @@ void error(size_t code, unsigned short index) {
 
 		case OP_DNEG:
 			*((double*)(stack + sp - DOUBLE_SIZE)) *=  -1.0;
-			printf("\n%f\n", *((double*)(stack + sp - DOUBLE_SIZE)));
+
 			break;
 
 		case OP_INEG:
@@ -246,12 +246,36 @@ void error(size_t code, unsigned short index) {
 		//LOGIC OPERATIONS
 
 		case OP_IAOR:
+			itemp = *((__int64*)(stack + sp - INTEGER_SIZE)) | *((__int64*)(stack + sp - (2 * INTEGER_SIZE)));
+
+			sp -= 2 * INTEGER_SIZE;
+			memset(stack + sp, '\0', 2 * INTEGER_SIZE);
+
+			*((__int64*)(stack + sp)) = itemp;
+			sp += INTEGER_SIZE;
+
 			break;
 
 		case OP_IAAND:
+			itemp = *((__int64*)(stack + sp - INTEGER_SIZE)) & *((__int64*)(stack + sp - (2 * INTEGER_SIZE)));
+
+			sp -= 2 * INTEGER_SIZE;
+			memset(stack + sp, '\0', 2 * INTEGER_SIZE);
+
+			*((__int64*)(stack + sp)) = itemp;
+			sp += INTEGER_SIZE;
+
 			break;
 
 		case OP_IAXOR:
+			itemp = *((__int64*)(stack + sp - INTEGER_SIZE)) ^ *((__int64*)(stack + sp - (2 * INTEGER_SIZE)));
+
+			sp -= 2 * INTEGER_SIZE;
+			memset(stack + sp, '\0', 2 * INTEGER_SIZE);
+
+			*((__int64*)(stack + sp)) = itemp;
+			sp += INTEGER_SIZE;
+
 			break;
 
 		//OTHER
@@ -270,12 +294,25 @@ void error(size_t code, unsigned short index) {
 		switch(bcode_array[ip]) {
 
 		case OP_DPRINT:
+			sp -= DOUBLE_SIZE;
+			printf("\nPOP AND PRINT DOUBLE FROM TOS: %f\n", *((double*)(stack + sp)));
+
+			memset(stack + sp, '\0', DOUBLE_SIZE);
+
 			break;
 
 		case OP_IPRINT:
+			sp -= INTEGER_SIZE;
+			printf("\nPOP AND PRINT INTEGER FROM TOS: %d\n", *((__int64*)(stack + sp)));
+
+			memset(stack + sp, '\0', INTEGER_SIZE);
+
 			break;
 
 		case OP_SPRINT:
+			sp -= STRING_ID;
+			printf("\nPOP AND PRINT CONSTANT STRING: %s\n", const_str[*((short*)(stack + sp))]);
+
 			break;
 	
 
