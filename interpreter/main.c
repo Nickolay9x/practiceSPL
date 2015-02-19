@@ -31,9 +31,7 @@ int main(int argc, char **argv) {
 
 	// COUNTER AND OTHER TEMPORARY VARS
 
-	char cmd;
 	size_t i;
-	double number;
 
 	error_flag = 0;
 
@@ -93,12 +91,18 @@ int main(int argc, char **argv) {
 
 	}
 
+	//GET BYTECODE SIZE
+
 	fseek(input_bcode, 0, SEEK_END);
 	bcode_size = ftell(input_bcode);
 	bcode_size -= header_size(&header_info);
 
+	//SEEK TO THE BYTECODE BEGINNING
+
 	fseek(input_bcode, header_size(&header_info), SEEK_SET);
 	bcode_array = (unsigned char*)malloc(bcode_size);
+
+	//READ TO BYTECODE ARRAY
 
 	for(i = 0; i < bcode_size; i++) {
 	
@@ -109,7 +113,7 @@ int main(int argc, char **argv) {
 
 	fclose(input_bcode);
 
-	// EXECUTING FILE
+	// DECLARE STACK AND EXECUTE FILE
 
 	stack = (unsigned char*)malloc(stack_size);
 

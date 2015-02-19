@@ -3,13 +3,14 @@
 #include "executing.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 void error(size_t code, unsigned short index) {
 
 	switch(code) {
 
 	case ERROR:
-		printf("ERROR DURING EXECUTING THIS PROGRAM\n");
+		printf("\n\nERROR DURING EXECUTING THIS PROGRAM\n");
 		break;
 
 	case INPUT_NF:
@@ -48,39 +49,59 @@ void error(size_t code, unsigned short index) {
 		// D/I/SLOAD
 
 		case OP_DLOAD:
+			memcpy_s(&(*(stack + sp)), DOUBLE_SIZE, &(*(bcode_array + ip + 1)), DOUBLE_SIZE);
+			sp += DOUBLE_SIZE;
 			break;
 
 		case OP_ILOAD:
+			memcpy_s(&(*(stack + sp)), INTEGER_SIZE, &(*(bcode_array + ip + 1)), INTEGER_SIZE);
+			sp += INTEGER_SIZE;
 			break;
 
 		case OP_SLOAD:
+			memcpy_s(&(*(stack + sp)), STRING_ID, &(*(bcode_array + ip + 1)), STRING_ID);
+			sp += STRING_ID;
 			break;
 
 		// D/I/SLOAD0
 
 		case OP_DLOAD0:
+			*((double*)(stack + sp)) = (double)0.0;
+			sp =+ DOUBLE_SIZE;
 			break;
 
 		case OP_ILOAD0:
+			*((long long int*)(stack + sp)) = (long long int)0;
+			sp += INTEGER_SIZE;
 			break;
 
 		case OP_SLOAD0:
+			stack[sp] = '\0';
+			sp++;
 			break;
 
 		//D/ILOAD1
 
 		case OP_DLOAD1:
+			*((double*)(stack + sp)) = (double)1.0;
+			sp =+ DOUBLE_SIZE;
 			break;
 
 		case OP_ILOAD1:
+			*((long long int*)(stack + sp)) = (long long int)1;
+			sp += INTEGER_SIZE;
 			break;
 
 		//D/ILOADM1
 
 		case OP_DLOADM1:
+			*((double*)(stack + sp)) = (double)-1.0;
+			sp =+ DOUBLE_SIZE;
 			break;
 
 		case OP_ILOADM1:
+			*((long long int*)(stack + sp)) = (long long int)-1;
+			sp += INTEGER_SIZE;
 			break;
 
 		default:
