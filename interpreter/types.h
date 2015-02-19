@@ -3,8 +3,7 @@
 
 #include <stdio.h>
 
-#define DOUBLE_SIZE 8
-#define INTEGER_SIZE 8
+#define STACK_ELEMENT_SIZE 8
 #define STRING_ID 2
 
 #pragma pack(push, 2)

@@ -44,67 +44,83 @@ void error(size_t code, unsigned short index) {
 
 	void load_cmds() {
 
+		short temp;
+
 		switch(bcode_array[ip]) {
 
 		// D/I/SLOAD
 
 		case OP_DLOAD:
-			memcpy_s(&(*(stack + sp)), DOUBLE_SIZE, &(*(bcode_array + ip + 1)), DOUBLE_SIZE);
-			sp += DOUBLE_SIZE;
-			ip += DOUBLE_SIZE;
+			memcpy_s(&(*(stack + sp)), STACK_ELEMENT_SIZE, &(*(bcode_array + ip + 1)), STACK_ELEMENT_SIZE);
+
+			sp += STACK_ELEMENT_SIZE;
+			ip += STACK_ELEMENT_SIZE;
+
 			break;
 
 		case OP_ILOAD:
-			memcpy_s(&(*(stack + sp)), INTEGER_SIZE, &(*(bcode_array + ip + 1)), INTEGER_SIZE);
-			sp += INTEGER_SIZE;
-			ip += INTEGER_SIZE;
+			memcpy_s(&(*(stack + sp)), STACK_ELEMENT_SIZE, &(*(bcode_array + ip + 1)), STACK_ELEMENT_SIZE);
+
+			sp += STACK_ELEMENT_SIZE;
+			ip += STACK_ELEMENT_SIZE;
+
 			break;
 
 		case OP_SLOAD:
-			memcpy_s(&(*(stack + sp)), STRING_ID, &(*(bcode_array + ip + 1)), STRING_ID);
-			sp += STRING_ID;
+			temp = *((short*)(bcode_array + ip + 1));
+			*((__int64*)(stack + sp)) = (__int64)temp;
+
+			sp += STACK_ELEMENT_SIZE;
 			ip += STRING_ID;
+
 			break;
 
 		// D/I/SLOAD0
 
 		case OP_DLOAD0:
 			*((double*)(stack + sp)) = (double)0.0;
-			sp =+ DOUBLE_SIZE;
+			sp =+ STACK_ELEMENT_SIZE;
+
 			break;
 
 		case OP_ILOAD0:
 			*((__int64*)(stack + sp)) = (__int64)0;
-			sp += INTEGER_SIZE;
+			sp += STACK_ELEMENT_SIZE;
+
 			break;
 
 		case OP_SLOAD0:
-			stack[sp] = '\0';
-			sp++;
+			*((__int64*)(stack + sp)) = (__int64)0;
+			sp += STACK_ELEMENT_SIZE;
+
 			break;
 
 		//D/ILOAD1
 
 		case OP_DLOAD1:
 			*((double*)(stack + sp)) = (double)1.0;
-			sp =+ DOUBLE_SIZE;
+			sp =+ STACK_ELEMENT_SIZE;
+
 			break;
 
 		case OP_ILOAD1:
 			*((__int64*)(stack + sp)) = (__int64)1;
-			sp += INTEGER_SIZE;
+			sp += STACK_ELEMENT_SIZE;
+
 			break;
 
 		//D/ILOADM1
 
 		case OP_DLOADM1:
 			*((double*)(stack + sp)) = (double)-1.0;
-			sp =+ DOUBLE_SIZE;
+			sp =+ STACK_ELEMENT_SIZE;
+
 			break;
 
 		case OP_ILOADM1:
 			*((__int64*)(stack + sp)) = (__int64)-1;
-			sp += INTEGER_SIZE;
+			sp += STACK_ELEMENT_SIZE;
+
 			break;
 
 		default:
@@ -125,156 +141,156 @@ void error(size_t code, unsigned short index) {
 		//ADD
 
 		case OP_DADD:
-			dtemp = *((double*)(stack + sp - DOUBLE_SIZE)) + *((double*)(stack + sp - (2 * DOUBLE_SIZE)));
+			dtemp = *((double*)(stack + sp - STACK_ELEMENT_SIZE)) + *((double*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
-			sp -= 2 * DOUBLE_SIZE;
-			memset(stack + sp, '\0', 2 * DOUBLE_SIZE);
+			sp -= 2 * STACK_ELEMENT_SIZE;
+			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((double*)(stack + sp)) = dtemp;
-			sp += DOUBLE_SIZE;
+			sp += STACK_ELEMENT_SIZE;
 
 			break;
 
 		case OP_IADD:
-			itemp = *((__int64*)(stack + sp - INTEGER_SIZE)) + *((__int64*)(stack + sp - (2 * INTEGER_SIZE)));
+			itemp = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) + *((__int64*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
-			sp -= 2 * INTEGER_SIZE;
-			memset(stack + sp, '\0', 2 * INTEGER_SIZE);
+			sp -= 2 * STACK_ELEMENT_SIZE;
+			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((__int64*)(stack + sp)) = itemp;
-			sp += INTEGER_SIZE;
+			sp += STACK_ELEMENT_SIZE;
 
 			break;
 
 		//SUB
 
 		case OP_DSUB:
-			dtemp = *((double*)(stack + sp - DOUBLE_SIZE)) - *((double*)(stack + sp - (2 * DOUBLE_SIZE)));
+			dtemp = *((double*)(stack + sp - STACK_ELEMENT_SIZE)) - *((double*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
-			sp -= 2 * DOUBLE_SIZE;
-			memset(stack + sp, '\0', 2 * DOUBLE_SIZE);
+			sp -= 2 * STACK_ELEMENT_SIZE;
+			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((double*)(stack + sp)) = dtemp;
-			sp += DOUBLE_SIZE;
+			sp += STACK_ELEMENT_SIZE;
 
 			break;
 
 		case OP_ISUB:
-			itemp = *((__int64*)(stack + sp - INTEGER_SIZE)) - *((__int64*)(stack + sp - (2 * INTEGER_SIZE)));
+			itemp = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) - *((__int64*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
-			sp -= 2 * INTEGER_SIZE;
-			memset(stack + sp, '\0', 2 * INTEGER_SIZE);
+			sp -= 2 * STACK_ELEMENT_SIZE;
+			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((__int64*)(stack + sp)) = itemp;
-			sp += INTEGER_SIZE;
+			sp += STACK_ELEMENT_SIZE;
 
 			break;
 
 		//MUL
 
 		case OP_DMUL:
-			dtemp = *((double*)(stack + sp - DOUBLE_SIZE)) * *((double*)(stack + sp - (2 * DOUBLE_SIZE)));
+			dtemp = *((double*)(stack + sp - STACK_ELEMENT_SIZE)) * *((double*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
-			sp -= 2 * DOUBLE_SIZE;
-			memset(stack + sp, '\0', 2 * DOUBLE_SIZE);
+			sp -= 2 * STACK_ELEMENT_SIZE;
+			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((double*)(stack + sp)) = dtemp;
-			sp += DOUBLE_SIZE;
+			sp += STACK_ELEMENT_SIZE;
 
 			break;
 
 		case OP_IMUL:
-			itemp = *((__int64*)(stack + sp - INTEGER_SIZE)) * *((__int64*)(stack + sp - (2 * INTEGER_SIZE)));
+			itemp = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) * *((__int64*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
-			sp -= 2 * INTEGER_SIZE;
-			memset(stack + sp, '\0', 2 * INTEGER_SIZE);
+			sp -= 2 * STACK_ELEMENT_SIZE;
+			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((__int64*)(stack + sp)) = itemp;
-			sp += INTEGER_SIZE;
+			sp += STACK_ELEMENT_SIZE;
 
 			break;
 
 		//DIV
 
 		case OP_DDIV:
-			dtemp = *((double*)(stack + sp - DOUBLE_SIZE)) / *((double*)(stack + sp - (2 * DOUBLE_SIZE)));
+			dtemp = *((double*)(stack + sp - STACK_ELEMENT_SIZE)) / *((double*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
-			sp -= 2 * DOUBLE_SIZE;
-			memset(stack + sp, '\0', 2 * DOUBLE_SIZE);
+			sp -= 2 * STACK_ELEMENT_SIZE;
+			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((double*)(stack + sp)) = dtemp;
-			sp += DOUBLE_SIZE;
+			sp += STACK_ELEMENT_SIZE;
 
 			break;
 
 		case OP_IDIV:
-			itemp = *((__int64*)(stack + sp - INTEGER_SIZE)) / *((__int64*)(stack + sp - (2 * INTEGER_SIZE)));
+			itemp = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) / *((__int64*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
-			sp -= 2 * INTEGER_SIZE;
-			memset(stack + sp, '\0', 2 * INTEGER_SIZE);
+			sp -= 2 * STACK_ELEMENT_SIZE;
+			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((__int64*)(stack + sp)) = itemp;
-			sp += INTEGER_SIZE;
+			sp += STACK_ELEMENT_SIZE;
 
 			break;
 
 		//MOD(%)
 
 		case OP_IMOD:
-			itemp = *((__int64*)(stack + sp - INTEGER_SIZE)) % *((__int64*)(stack + sp - (2 * INTEGER_SIZE)));
+			itemp = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) % *((__int64*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
-			sp -= 2 * INTEGER_SIZE;
-			memset(stack + sp, '\0', 2 * INTEGER_SIZE);
+			sp -= 2 * STACK_ELEMENT_SIZE;
+			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((__int64*)(stack + sp)) = itemp;
-			sp += INTEGER_SIZE;
+			sp += STACK_ELEMENT_SIZE;
 
 			break;
 
 		//NEGATIVE(-1 * n)
 
 		case OP_DNEG:
-			*((double*)(stack + sp - DOUBLE_SIZE)) *=  -1.0;
+			*((double*)(stack + sp - STACK_ELEMENT_SIZE)) *=  -1.0;
 
 			break;
 
 		case OP_INEG:
-			*((__int64*)(stack + sp - INTEGER_SIZE)) *=  -1;
+			*((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) *=  -1;
 
 			break;
 
 		//LOGIC OPERATIONS
 
 		case OP_IAOR:
-			itemp = *((__int64*)(stack + sp - INTEGER_SIZE)) | *((__int64*)(stack + sp - (2 * INTEGER_SIZE)));
+			itemp = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) | *((__int64*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
-			sp -= 2 * INTEGER_SIZE;
-			memset(stack + sp, '\0', 2 * INTEGER_SIZE);
+			sp -= 2 * STACK_ELEMENT_SIZE;
+			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((__int64*)(stack + sp)) = itemp;
-			sp += INTEGER_SIZE;
+			sp += STACK_ELEMENT_SIZE;
 
 			break;
 
 		case OP_IAAND:
-			itemp = *((__int64*)(stack + sp - INTEGER_SIZE)) & *((__int64*)(stack + sp - (2 * INTEGER_SIZE)));
+			itemp = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) & *((__int64*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
-			sp -= 2 * INTEGER_SIZE;
-			memset(stack + sp, '\0', 2 * INTEGER_SIZE);
+			sp -= 2 * STACK_ELEMENT_SIZE;
+			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((__int64*)(stack + sp)) = itemp;
-			sp += INTEGER_SIZE;
+			sp += STACK_ELEMENT_SIZE;
 
 			break;
 
 		case OP_IAXOR:
-			itemp = *((__int64*)(stack + sp - INTEGER_SIZE)) ^ *((__int64*)(stack + sp - (2 * INTEGER_SIZE)));
+			itemp = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) ^ *((__int64*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
-			sp -= 2 * INTEGER_SIZE;
-			memset(stack + sp, '\0', 2 * INTEGER_SIZE);
+			sp -= 2 * STACK_ELEMENT_SIZE;
+			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((__int64*)(stack + sp)) = itemp;
-			sp += INTEGER_SIZE;
+			sp += STACK_ELEMENT_SIZE;
 
 			break;
 
@@ -294,24 +310,24 @@ void error(size_t code, unsigned short index) {
 		switch(bcode_array[ip]) {
 
 		case OP_DPRINT:
-			sp -= DOUBLE_SIZE;
+			sp -= STACK_ELEMENT_SIZE;
 			printf("\nPOP AND PRINT DOUBLE FROM TOS: %f\n", *((double*)(stack + sp)));
 
-			memset(stack + sp, '\0', DOUBLE_SIZE);
+			memset(stack + sp, '\0', STACK_ELEMENT_SIZE);
 
 			break;
 
 		case OP_IPRINT:
-			sp -= INTEGER_SIZE;
+			sp -= STACK_ELEMENT_SIZE;
 			printf("\nPOP AND PRINT INTEGER FROM TOS: %d\n", *((__int64*)(stack + sp)));
 
-			memset(stack + sp, '\0', INTEGER_SIZE);
+			memset(stack + sp, '\0', STACK_ELEMENT_SIZE);
 
 			break;
 
 		case OP_SPRINT:
-			sp -= STRING_ID;
-			printf("\nPOP AND PRINT CONSTANT STRING: %s\n", const_str[*((short*)(stack + sp))]);
+			sp -= STACK_ELEMENT_SIZE;
+			printf("\nPOP AND PRINT CONSTANT STRING: %s\n", const_str[*((__int64*)(stack + sp))]);
 
 			break;
 	
@@ -330,12 +346,18 @@ void error(size_t code, unsigned short index) {
 		switch(bcode_array[ip]) {
 
 		case OP_I2D:
+			*((double*)(stack + sp - STACK_ELEMENT_SIZE)) =  (double)*((__int64*)(stack + sp - STACK_ELEMENT_SIZE));
+
 			break;
 
 		case OP_D2I:
+			*((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) =  (__int64)*((double*)(stack + sp - STACK_ELEMENT_SIZE));
+
 			break;
 
 		case OP_S2I:
+			*((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) = atoi(const_str[*((__int64*)(stack + sp - STACK_ELEMENT_SIZE))]);
+
 			break;
 	
 
@@ -353,9 +375,16 @@ void error(size_t code, unsigned short index) {
 		switch(bcode_array[ip]) {
 
 		case OP_SWAP:
+			*((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) ^= *((__int64*)(stack + sp - 2 * STACK_ELEMENT_SIZE)); // a = a ^ b
+			*((__int64*)(stack + sp - 2 * STACK_ELEMENT_SIZE)) ^= *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)); // b = b ^ a
+			*((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) ^= *((__int64*)(stack + sp - 2 * STACK_ELEMENT_SIZE)); // a = a ^ b
+
 			break;
 
 		case OP_POP:
+			sp -= STACK_ELEMENT_SIZE;
+			memset(stack + sp, '\0', STACK_ELEMENT_SIZE);
+
 			break;
 
 
