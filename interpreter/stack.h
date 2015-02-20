@@ -16,6 +16,6 @@ typedef struct element stack_func;
 
 void push(unsigned short args, unsigned short local, stack_func **head);
 
-void pop(stack_func **head);
+void pop(stack_func **head, unsigned char *breakexec);
 
 #endif

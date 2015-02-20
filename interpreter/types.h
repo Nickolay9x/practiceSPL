@@ -272,6 +272,10 @@ typedef enum {
 
 	FREEZE,
 
+	//OUT OF BOUNDS FOR LOAD/STORE VARIABLES
+
+	ID_OUT_OF_BOUNDS,
+
 } error_type;
 
 #endif

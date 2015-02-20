@@ -16,12 +16,14 @@ void push(unsigned short args, unsigned short local, stack_func **head) {
 
 }
 
-void pop(stack_func **head) {
+void pop(stack_func **head, unsigned char *breakexec) {
 
 	stack_func *pop_function = (stack_func*)malloc(sizeof(stack_func));
 
 	pop_function = (*head);
 	(*head) = (*head)->next;
+
+	if(!(*head)) (*breakexec) = 1;
 
 	free(pop_function);
 

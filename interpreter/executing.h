@@ -30,18 +30,18 @@
 
 	//QUICK VARIABLES
 
-		void quick_loadvar_cmds();
-		void quick_storevar_cmds();
+		void quick_loadvar_cmds(stack_func **head);
+		void quick_storevar_cmds(stack_func **head);
 
 	//LOAD/STORE VARIABLES
 
-		void loadvar_cmds();
-		void storevar_cmds();
+		void loadvar_cmds(stack_func **head);
+		void storevar_cmds(stack_func **head);
 
 	//LOAD/STORE FOR CYCLES
 
-		void cycle_load_cmds();
-		void cycle_store_cmds();
+		void cycle_load_cmds(stack_func **head);
+		void cycle_store_cmds(stack_func **head);
 
 //CMP, JMP, LABEL, IF*
 
@@ -51,7 +51,7 @@
 
 //OTHER FUNCTIONS(CALL, STOP, DUMP, BREAK)
 
-	void other_cmds(stack_func **head);
+	void other_cmds(stack_func **head, unsigned char *breakexec);
 
 //MAIN EXECUTE FUNCTION
 
