@@ -35,6 +35,11 @@ void error(size_t code, unsigned short index) {
 
 	case UNKNWN_CMD:
 		printf("UNKNOWN COMMAND. IP: %d\n", index);
+		break;
+
+	case FREEZE:
+		printf("PROGRAM FROZEN. IP: %d\nPRESS ANY KEY TO CONTINUE\n", index);
+		break;
 
 	}
 
@@ -128,6 +133,8 @@ void error(size_t code, unsigned short index) {
 
 		}
 
+		ip++;
+
 	}
 
 	void ariphmetic_cmds() {
@@ -144,7 +151,6 @@ void error(size_t code, unsigned short index) {
 			dtemp = *((double*)(stack + sp - STACK_ELEMENT_SIZE)) + *((double*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
 			sp -= 2 * STACK_ELEMENT_SIZE;
-			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((double*)(stack + sp)) = dtemp;
 			sp += STACK_ELEMENT_SIZE;
@@ -155,7 +161,6 @@ void error(size_t code, unsigned short index) {
 			itemp = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) + *((__int64*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
 			sp -= 2 * STACK_ELEMENT_SIZE;
-			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((__int64*)(stack + sp)) = itemp;
 			sp += STACK_ELEMENT_SIZE;
@@ -168,7 +173,6 @@ void error(size_t code, unsigned short index) {
 			dtemp = *((double*)(stack + sp - STACK_ELEMENT_SIZE)) - *((double*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
 			sp -= 2 * STACK_ELEMENT_SIZE;
-			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((double*)(stack + sp)) = dtemp;
 			sp += STACK_ELEMENT_SIZE;
@@ -179,7 +183,6 @@ void error(size_t code, unsigned short index) {
 			itemp = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) - *((__int64*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
 			sp -= 2 * STACK_ELEMENT_SIZE;
-			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((__int64*)(stack + sp)) = itemp;
 			sp += STACK_ELEMENT_SIZE;
@@ -192,7 +195,6 @@ void error(size_t code, unsigned short index) {
 			dtemp = *((double*)(stack + sp - STACK_ELEMENT_SIZE)) * *((double*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
 			sp -= 2 * STACK_ELEMENT_SIZE;
-			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((double*)(stack + sp)) = dtemp;
 			sp += STACK_ELEMENT_SIZE;
@@ -203,7 +205,6 @@ void error(size_t code, unsigned short index) {
 			itemp = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) * *((__int64*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
 			sp -= 2 * STACK_ELEMENT_SIZE;
-			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((__int64*)(stack + sp)) = itemp;
 			sp += STACK_ELEMENT_SIZE;
@@ -216,7 +217,6 @@ void error(size_t code, unsigned short index) {
 			dtemp = *((double*)(stack + sp - STACK_ELEMENT_SIZE)) / *((double*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
 			sp -= 2 * STACK_ELEMENT_SIZE;
-			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((double*)(stack + sp)) = dtemp;
 			sp += STACK_ELEMENT_SIZE;
@@ -227,7 +227,6 @@ void error(size_t code, unsigned short index) {
 			itemp = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) / *((__int64*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
 			sp -= 2 * STACK_ELEMENT_SIZE;
-			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((__int64*)(stack + sp)) = itemp;
 			sp += STACK_ELEMENT_SIZE;
@@ -240,7 +239,6 @@ void error(size_t code, unsigned short index) {
 			itemp = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) % *((__int64*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
 			sp -= 2 * STACK_ELEMENT_SIZE;
-			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((__int64*)(stack + sp)) = itemp;
 			sp += STACK_ELEMENT_SIZE;
@@ -265,7 +263,6 @@ void error(size_t code, unsigned short index) {
 			itemp = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) | *((__int64*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
 			sp -= 2 * STACK_ELEMENT_SIZE;
-			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((__int64*)(stack + sp)) = itemp;
 			sp += STACK_ELEMENT_SIZE;
@@ -276,7 +273,6 @@ void error(size_t code, unsigned short index) {
 			itemp = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) & *((__int64*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
 			sp -= 2 * STACK_ELEMENT_SIZE;
-			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((__int64*)(stack + sp)) = itemp;
 			sp += STACK_ELEMENT_SIZE;
@@ -287,7 +283,6 @@ void error(size_t code, unsigned short index) {
 			itemp = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) ^ *((__int64*)(stack + sp - (2 * STACK_ELEMENT_SIZE)));
 
 			sp -= 2 * STACK_ELEMENT_SIZE;
-			memset(stack + sp, '\0', 2 * STACK_ELEMENT_SIZE);
 
 			*((__int64*)(stack + sp)) = itemp;
 			sp += STACK_ELEMENT_SIZE;
@@ -301,6 +296,8 @@ void error(size_t code, unsigned short index) {
 
 		}
 
+		ip++;
+
 	}
 
 //PRINT TOS
@@ -313,15 +310,11 @@ void error(size_t code, unsigned short index) {
 			sp -= STACK_ELEMENT_SIZE;
 			printf("\nPOP AND PRINT DOUBLE FROM TOS: %f\n", *((double*)(stack + sp)));
 
-			memset(stack + sp, '\0', STACK_ELEMENT_SIZE);
-
 			break;
 
 		case OP_IPRINT:
 			sp -= STACK_ELEMENT_SIZE;
 			printf("\nPOP AND PRINT INTEGER FROM TOS: %d\n", *((__int64*)(stack + sp)));
-
-			memset(stack + sp, '\0', STACK_ELEMENT_SIZE);
 
 			break;
 
@@ -336,6 +329,8 @@ void error(size_t code, unsigned short index) {
 			break;
 
 		}
+
+		ip++;
 
 	}
 
@@ -366,6 +361,8 @@ void error(size_t code, unsigned short index) {
 
 		}
 
+		ip++;
+
 	}
 
 //STACK FUNCTIONS
@@ -383,7 +380,6 @@ void error(size_t code, unsigned short index) {
 
 		case OP_POP:
 			sp -= STACK_ELEMENT_SIZE;
-			memset(stack + sp, '\0', STACK_ELEMENT_SIZE);
 
 			break;
 
@@ -392,6 +388,8 @@ void error(size_t code, unsigned short index) {
 			break;
 
 		}
+
+		ip++;
 
 	}
 
@@ -600,9 +598,15 @@ void error(size_t code, unsigned short index) {
 		switch(bcode_array[ip]) {
 
 		case OP_DCMP:
+			sp -= STACK_ELEMENT_SIZE;
+			*((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) = (*((double*)(stack + sp)) > *((double*)(stack + sp - STACK_ELEMENT_SIZE))) ? (__int64)1 : ( (*((double*)(stack + sp)) == *((double*)(stack + sp - STACK_ELEMENT_SIZE))) ? (__int64)0 : (__int64)-1);
+
 			break;
 
 		case OP_ICMP:
+			sp -= STACK_ELEMENT_SIZE;
+			*((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) = (*((__int64*)(stack + sp)) > *((__int64*)(stack + sp - STACK_ELEMENT_SIZE))) ? (__int64)1 : ( (*((__int64*)(stack + sp)) == *((__int64*)(stack + sp - STACK_ELEMENT_SIZE))) ? (__int64)0 : (__int64)-1);
+
 			break;
 
 		default: 
@@ -612,23 +616,43 @@ void error(size_t code, unsigned short index) {
 
 	}
 
-	void lbl_cmds() {
+	void lbl_cmds(stack_func **head) {
 
 		switch(bcode_array[ip]) {
 
 		case OP_JA:
+			ip = *((unsigned short*)(bcode_array + ip + 1)) - 1;
+
 			break;
 
 		case OP_LABEL:
+			ip += LABEL_SIZE;
+
 			break;
 
 		case OP_MAIN:
+			sp += STACK_ELEMENT_SIZE; // Return value
+
+			*((__int64*)(stack + sp)) = (__int64)0;
+			*((__int64*)(stack + sp + (STACK_ELEMENT_SIZE * 1))) = (unsigned __int64)sp;
+			*((__int64*)(stack + sp + (STACK_ELEMENT_SIZE * 2))) = (unsigned __int64)ip;
+			sp += STACK_ELEMENT_SIZE * 3;
+
+			ip++;
+			push(*((unsigned short*)(bcode_array + ip)), *((unsigned short*)(bcode_array + ip + sizeof((*head)->sizeof_args))), head);
+
+			ip += sizeof((*head)->sizeof_args) + sizeof((*head)->sizeof_local);
+			sp += (STACK_ELEMENT_SIZE * 12) + ((*head)->sizeof_local * 8); // LOCAL VARIABLES AND D/I/SVAR[0-3]
+			bp = sp;
+
 			break;
 
 		default: 
 			break;
 
 		}
+
+		ip++;
 
 	}
 
@@ -639,26 +663,38 @@ void error(size_t code, unsigned short index) {
 		// '!=' '=='
 
 		case OP_IFICMPNE:
+			ip = (*((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) != *((__int64*)(stack + sp - 2 * STACK_ELEMENT_SIZE))) ? *((unsigned short*)(bcode_array + ip + 1)) - 1 : ip;
+
 			break;
 
 		case OP_IFICMPE:
+			ip = (*((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) == *((__int64*)(stack + sp - 2 * STACK_ELEMENT_SIZE))) ? *((unsigned short*)(bcode_array + ip + 1)) - 1 : ip;
+
 			break;
 
 		//='>' '>='=
 
 		case OP_IFICMPG:
+			ip = (*((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) > *((__int64*)(stack + sp - 2 * STACK_ELEMENT_SIZE))) ? *((unsigned short*)(bcode_array + ip + 1)) - 1 : ip;
+
 			break;
 
 		case OP_IFICMPGE:
+			ip = (*((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) >= *((__int64*)(stack + sp - 2 * STACK_ELEMENT_SIZE))) ? *((unsigned short*)(bcode_array + ip + 1)) - 1 : ip;
+
 			break;
 
 
 		//='<' '<='=
 
 		case OP_IFICMPL:
+			ip = (*((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) < *((__int64*)(stack + sp - 2 * STACK_ELEMENT_SIZE))) ? *((unsigned short*)(bcode_array + ip + 1)) - 1 : ip;
+
 			break;
 
 		case OP_IFICMPLE:
+			ip = (*((__int64*)(stack + sp - STACK_ELEMENT_SIZE)) <= *((__int64*)(stack + sp - 2 * STACK_ELEMENT_SIZE))) ? *((unsigned short*)(bcode_array + ip + 1)) - 1 : ip;
+
 			break;
 
 
@@ -667,20 +703,34 @@ void error(size_t code, unsigned short index) {
 
 		}
 
+		ip++;
+
 	}
 
 //OTHER FUNCTIONS(CALL, STOP, DUMP, BREAK)
 
-	void other_cmds() {
+	void other_cmds(stack_func **head) {
+
+		size_t i;
 
 		switch(bcode_array[ip]) {
 
 		//FOR DEBUG
 
 		case OP_DUMP:
+			printf("\nDUMP TOS(DOUBLE): %f\n", *((double*)(stack + sp - STACK_ELEMENT_SIZE)));
+			printf("\nDUMP TOS(INTEGER): %f\n", *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)));
+
 			break;
 
 		case OP_STOP:
+			error(FREEZE, ip);
+
+			for(i = 0; i < 101; i++)
+				printf("%d ", stack[i]);
+
+			_getch();
+
 			break;
 
 		case OP_BREAK:
@@ -689,12 +739,36 @@ void error(size_t code, unsigned short index) {
 		//FOR FUNCTIONS
 
 		case OP_CALL:
+			sp += STACK_ELEMENT_SIZE; // Return value
+			*((unsigned __int64*)(stack + sp)) = (unsigned __int64)bp;
+			*((unsigned __int64*)(stack + sp + STACK_ELEMENT_SIZE)) = (unsigned __int64)sp;
+			*((unsigned __int64*)(stack + sp + STACK_ELEMENT_SIZE * 2)) = (unsigned __int64)(ip + 2);
+			sp += STACK_ELEMENT_SIZE * 3;
+
+			ip = *((unsigned short*)(bcode_array + ip + 1));
+			push(*((unsigned short*)(bcode_array + ip + 3)), *((unsigned short*)(bcode_array + ip + 3 + 2)), head);
+
+			ip += 1 + 2 + 4; //sizeof(OP_FUNC) + sizeof(CURRENT_IP) + sizeof(local) + sizeof(args)
+			sp += (STACK_ELEMENT_SIZE * 12) + ((*head)->sizeof_local * 8); // LOCAL VARIABLES AND D/I/SVAR[0-3]
+			bp = sp;
+
 			break;
 
 		case OP_CALLNATIVE:
 			break;
 
 		case OP_RETURN:
+			if(sp != bp)
+				*((__int64*)(stack + bp - ((*head)->sizeof_local * 8) - (STACK_ELEMENT_SIZE * 4))) = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE)); // TOS as a return value
+			else
+				*((__int64*)(stack + bp - ((*head)->sizeof_local * 8) - (STACK_ELEMENT_SIZE * 2))) -= STACK_ELEMENT_SIZE; // void function
+
+			sp = bp - (STACK_ELEMENT_SIZE * 12) - ((*head)->sizeof_local * 8) - STACK_ELEMENT_SIZE; // sp -> ip
+
+			ip = (unsigned short)*((__int64*)(stack + sp - (STACK_ELEMENT_SIZE * 0)));
+			bp = (unsigned short)*((__int64*)(stack + sp - (STACK_ELEMENT_SIZE * 2)));
+			sp = (unsigned short)*((__int64*)(stack + sp - (STACK_ELEMENT_SIZE * 1)));
+
 			break;
 
 
@@ -702,6 +776,8 @@ void error(size_t code, unsigned short index) {
 			break;
 
 		}
+
+		ip++;
 
 	}
 
@@ -713,8 +789,16 @@ size_t execute(size_t last_cmd, unsigned char *er_flag) {
 	__int64 inumber;
 	char *string;
 
-	ip = 0; // START POINT
+	stack_func *head;
+
+	ip = main_id; // START POINT. 
+
+	sp = 0;
+	bp = 0;
+
 	breakpoint = 0;
+
+	head = NULL;
 
 	while(!breakpoint) {
 
@@ -722,49 +806,49 @@ size_t execute(size_t last_cmd, unsigned char *er_flag) {
 
 	//LOAD ON TOS AND ARIPMETIC COMMANDS
 
-		if((bcode_array[ip] >= OP_DLOAD) && (bcode_array[ip] < OP_DADD)) load_cmds();
-		if((bcode_array[ip] > OP_ILOADM1) && (bcode_array[ip] < OP_DPRINT)) ariphmetic_cmds();
+		if((bcode_array[ip] >= OP_DLOAD) && (bcode_array[ip] < OP_DADD)) { load_cmds(); continue; }
+		if((bcode_array[ip] > OP_ILOADM1) && (bcode_array[ip] < OP_DPRINT)) { ariphmetic_cmds(); continue; }
 	
 	//PRINT TOS
 
-		if((bcode_array[ip] > OP_IAXOR) && (bcode_array[ip] < OP_I2D)) print_cmds();
+		if((bcode_array[ip] > OP_IAXOR) && (bcode_array[ip] < OP_I2D)) { print_cmds(); continue; }
 
 	//CONVERT TOS
 	
-		if((bcode_array[ip] > OP_SPRINT) && (bcode_array[ip] < OP_SWAP)) convert_cmds();
+		if((bcode_array[ip] > OP_SPRINT) && (bcode_array[ip] < OP_SWAP)) { convert_cmds(); continue; }
 
 	//STACK FUNCTIONS
 
-		if((bcode_array[ip] > OP_S2I) && (bcode_array[ip] < OP_LOADDVAR0)) stack_cmds();
+		if((bcode_array[ip] > OP_S2I) && (bcode_array[ip] < OP_LOADDVAR0)) { stack_cmds(); continue; }
 
 	//======VARIABLES=====
 
 		//QUICK VARIABLES
 
-			if((bcode_array[ip] > OP_POP) && (bcode_array[ip] < OP_STOREDVAR0)) quick_loadvar_cmds();
-			if((bcode_array[ip] > OP_LOADSVAR3) && (bcode_array[ip] < OP_LOADDVAR)) quick_storevar_cmds();
+			if((bcode_array[ip] > OP_POP) && (bcode_array[ip] < OP_STOREDVAR0)) { quick_loadvar_cmds(); continue; }
+			if((bcode_array[ip] > OP_LOADSVAR3) && (bcode_array[ip] < OP_LOADDVAR)) { quick_storevar_cmds(); continue; }
 
 		//LOAD/STORE VARIABLES
 
-			if((bcode_array[ip] > OP_STORESVAR3) && (bcode_array[ip] < OP_STOREDVAR)) loadvar_cmds();
-			if((bcode_array[ip] > OP_LOADSVAR) && (bcode_array[ip] < OP_LOADCTXDVAR)) storevar_cmds();
+			if((bcode_array[ip] > OP_STORESVAR3) && (bcode_array[ip] < OP_STOREDVAR)) { loadvar_cmds(); continue; }
+			if((bcode_array[ip] > OP_LOADSVAR) && (bcode_array[ip] < OP_LOADCTXDVAR)) { storevar_cmds(); continue; }
 
 		//LOAD/STORE FOR CYCLES
 
-			if((bcode_array[ip] > OP_STORESVAR) && (bcode_array[ip] < OP_STORECTXDVAR)) cycle_load_cmds();
-			if((bcode_array[ip] > OP_LOADCTXSVAR) && (bcode_array[ip] < OP_DCMP)) cycle_store_cmds();
+			if((bcode_array[ip] > OP_STORESVAR) && (bcode_array[ip] < OP_STORECTXDVAR)) { cycle_load_cmds(); continue; }
+			if((bcode_array[ip] > OP_LOADCTXSVAR) && (bcode_array[ip] < OP_DCMP)) { cycle_store_cmds(); continue; }
 
 	//====================
 
 	//CMP, JMP, LABEL, IF*
 
-		if((bcode_array[ip] > OP_STORECTXSVAR) && (bcode_array[ip] < OP_JA)) cmp_cmds(); 
-		if((bcode_array[ip] > OP_ICMP) && (bcode_array[ip] < OP_IFICMPNE)) lbl_cmds();
-		if((bcode_array[ip] > OP_MAIN) && (bcode_array[ip] < OP_DUMP)) if_cmds();
+		if((bcode_array[ip] > OP_STORECTXSVAR) && (bcode_array[ip] < OP_JA)) { cmp_cmds(); continue; } 
+		if((bcode_array[ip] > OP_ICMP) && (bcode_array[ip] < OP_IFICMPNE)) { lbl_cmds(&head); continue; }
+		if((bcode_array[ip] > OP_MAIN) && (bcode_array[ip] < OP_DUMP)) { if_cmds(); continue; }
 
 	//OTHER FUNCTIONS(CALL, STOP, DUMP, BREAK)
 
-		if((bcode_array[ip] > OP_IFICMPLE) && (bcode_array[ip] < OP_BREAK + 1)) other_cmds();
+		if((bcode_array[ip] > OP_IFICMPLE) && (bcode_array[ip] < OP_BREAK + 1)) { other_cmds(&head); continue; }
 
 	//ELSE
 
@@ -773,11 +857,11 @@ size_t execute(size_t last_cmd, unsigned char *er_flag) {
 			error(UNKNWN_CMD, ip);
 			(*er_flag) = 1;
 
+			ip++;
+
 		}
 
 //============================
-
-		ip++;
 
 		if(ip >= last_cmd) breakpoint = 1;
 

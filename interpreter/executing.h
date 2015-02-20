@@ -1,11 +1,13 @@
 #ifndef H_EXECUTING
 #define H_EXECUTING
 
+#include "stack.h"
+
 #include <stdio.h>
 
 //PRINT ERROR MESSAGES
 
-	void error(size_t code, unsigned short index);
+	void error(size_t code, unsigned  short index);
 
 //LOAD ON TOS AND ARIPMETIC COMMANDS
 
@@ -44,12 +46,12 @@
 //CMP, JMP, LABEL, IF*
 
 	void cmp_cmds(); 
-	void lbl_cmds();
+	void lbl_cmds(stack_func **head);
 	void if_cmds();
 
 //OTHER FUNCTIONS(CALL, STOP, DUMP, BREAK)
 
-	void other_cmds();
+	void other_cmds(stack_func **head);
 
 //MAIN EXECUTE FUNCTION
 

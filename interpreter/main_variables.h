@@ -14,6 +14,7 @@ unsigned short count_of_funcs;
 char **const_str;
 
 unsigned short ip; //Instruction pointer 
+unsigned short bp; //Base pointer
 unsigned short sp; //Stack pointer
 
 #endif

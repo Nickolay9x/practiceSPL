@@ -5,6 +5,7 @@
 
 #define STACK_ELEMENT_SIZE 8
 #define STRING_ID 2
+#define LABEL_SIZE 2
 
 #pragma pack(push, 2)
 typedef struct {
@@ -239,7 +240,9 @@ typedef enum {
 	OP_CALL,
 	OP_CALLNATIVE,
 
-	//====95====
+	OP_FUNC,
+
+	//====96====
 
 	OP_RETURN,
 	OP_BREAK
@@ -264,6 +267,10 @@ typedef enum {
 	//UNKNOWN CMD
 
 	UNKNWN_CMD,
+
+	//STOP EXECUTION
+
+	FREEZE,
 
 } error_type;
 
