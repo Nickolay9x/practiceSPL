@@ -1,7 +1,7 @@
 #ifndef H_EXECUTING
 #define H_EXECUTING
 
-#include "stack.h"
+#include "stack_of_func.h"
 
 #include <stdio.h>
 

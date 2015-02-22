@@ -574,35 +574,44 @@ void error(size_t code, unsigned short index) {
 			switch(bcode_array[ip]) {
 
 			case OP_LOADDVAR:
-				sizeof_func = (*head)->sizeof_local + 12 + 3 + 1 + (*head)->sizeof_args; // 12 - quickvars; 3 - bp | sp | ip; 1 - return value
 				offset = *((unsigned short*)(bcode_array + ip + 1));
 
-				if( (offset > 0) && (offset <= sizeof_func) )
-					*((double*)(stack + sp)) = *((double*)( stack + bp - (offset * 8) ));
-				else
+				if( (offset > 0) && (offset <= ((*head)->sizeof_base_part) / 8) )
+					*((double*)(stack + sp)) = *((double*)( stack + bp - (offset * STACK_ELEMENT_SIZE) ));
+				else {
+
 					error(ID_OUT_OF_BOUNDS, ip);
+					sp -= STACK_ELEMENT_SIZE;
+
+				}
 
 				break;
 
 			case OP_LOADIVAR:
-				sizeof_func = (*head)->sizeof_local + 12 + 3 + 1 + (*head)->sizeof_args; // 12 - quickvars; 3 - bp | sp | ip; 1 - return value
 				offset = *((unsigned short*)(bcode_array + ip + 1));
 
-				if( (offset > 0) && (offset <= sizeof_func) )
+				if( (offset > 0) && (offset <= ((*head)->sizeof_base_part) / 8)) )
 					*((__int64*)(stack + sp)) = *((__int64*)( stack + bp - (offset * 8) ));
-				else
+				else {
+
 					error(ID_OUT_OF_BOUNDS, ip);
+					sp -= STACK_ELEMENT_SIZE;
+
+				}
 
 				break;
 
 			case OP_LOADSVAR:
-				sizeof_func = (*head)->sizeof_local + 12 + 3 + 1 + (*head)->sizeof_args; // 12 - quickvars; 3 - bp | sp | ip; 1 - return value
 				offset = *((unsigned short*)(bcode_array + ip + 1));
 
-				if( (offset > 0) && (offset <= sizeof_func) )
+				if( (offset > 0) && (offset <= ((*head)->sizeof_base_part) / 8)) )
 					*((__int64*)(stack + sp)) = *((__int64*)( stack + bp - (offset * 8) ));
-				else
+				else {
+
 					error(ID_OUT_OF_BOUNDS, ip);
+					sp -= STACK_ELEMENT_SIZE;
+
+				}
 
 				break;
 
@@ -626,35 +635,44 @@ void error(size_t code, unsigned short index) {
 			switch(bcode_array[ip]) {
 
 			case OP_STOREDVAR:
-				sizeof_func = (*head)->sizeof_local + 12 + 3 + 1 + (*head)->sizeof_args; // 12 - quickvars; 3 - bp | sp | ip; 1 - return value
 				offset = *((unsigned short*)(bcode_array + ip + 1));
 
-				if( (offset > 0) && (offset <= sizeof_func) )
+				if( (offset > 0) && (offset <= ((*head)->sizeof_base_part) / 8)) )
 					*((double*)( stack + bp - (offset * 8) )) = *((double*)(stack + sp - STACK_ELEMENT_SIZE));
-				else
+				else {
+
 					error(ID_OUT_OF_BOUNDS, ip);
+					sp += STACK_ELEMENT_SIZE;
+
+				}
 
 				break;
 
 			case OP_STOREIVAR:
-				sizeof_func = (*head)->sizeof_local + 12 + 3 + 1 + (*head)->sizeof_args; // 12 - quickvars; 3 - bp | sp | ip; 1 - return value
 				offset = *((unsigned short*)(bcode_array + ip + 1));
 
-				if( (offset > 0) && (offset <= sizeof_func) )
+				if( (offset > 0) && (offset <= ((*head)->sizeof_base_part) / 8)) )
 					*((__int64*)( stack + bp - (offset * 8) )) = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE));
-				else
+				else {
+
 					error(ID_OUT_OF_BOUNDS, ip);
+					sp += STACK_ELEMENT_SIZE;
+
+				}
 
 				break;
 
 			case OP_STORESVAR:
-				sizeof_func = (*head)->sizeof_local + 12 + 3 + 1 + (*head)->sizeof_args; // 12 - quickvars; 3 - bp | sp | ip; 1 - return value
 				offset = *((unsigned short*)(bcode_array + ip + 1));
 
-				if( (offset > 0) && (offset <= sizeof_func) )
+				if( (offset > 0) && (offset <= ((*head)->sizeof_base_part) / 8)) )
 					*((__int64*)( stack + bp - (offset * 8) )) = *((__int64*)(stack + sp - STACK_ELEMENT_SIZE));
-				else
+				else {
+
 					error(ID_OUT_OF_BOUNDS, ip);
+					sp += STACK_ELEMENT_SIZE;
+
+				}
 
 				break;
 
@@ -674,21 +692,64 @@ void error(size_t code, unsigned short index) {
 
 		void cycle_load_cmds(stack_func **head) {
 
+			unsigned short offset;
+
 			switch(bcode_array[ip]) {
 
-			case OP_LOADCTXDVAR:
+			case OP_LOADCTXDVAR: // context, id
+				if( (*((unsigned short*)(bcode_array + ip + 1)) > 0) && (*((unsigned short*)(bcode_array + ip + 1)) < sizeof_stack(head)) ) {
+
+					offset = get_offset( head, *((unsigned short*)(bcode_array + ip + 1)), *((unsigned short*)(bcode_array + ip + 3)) );
+					*((double*)(stack + sp)) = *((double*)(stack + sp - offset));
+
+				} else {
+
+					error(ID_OUT_OF_BOUNDS, ip);
+					sp -= STACK_ELEMENT_SIZE;
+
+				}
+
 				break;
 
 			case OP_LOADCTXIVAR:
+				if( (*((unsigned short*)(bcode_array + ip + 1)) > 0) && (*((unsigned short*)(bcode_array + ip + 1)) < sizeof_stack(head)) ) {
+
+					offset = get_offset( head, *((unsigned short*)(bcode_array + ip + 1)), *((unsigned short*)(bcode_array + ip + 3)) );
+					*((__int64*)(stack + sp)) = *((__int64*)(stack + sp - offset));
+
+				} else {
+
+					error(ID_OUT_OF_BOUNDS, ip);
+					sp -= STACK_ELEMENT_SIZE;
+
+				}
+
 				break;
 
 			case OP_LOADCTXSVAR:
+				if( (*((unsigned short*)(bcode_array + ip + 1)) > 0) && (*((unsigned short*)(bcode_array + ip + 1)) < sizeof_stack(head)) ) {
+
+					offset = get_offset( head, *((unsigned short*)(bcode_array + ip + 1)), *((unsigned short*)(bcode_array + ip + 3)) );
+					*((__int64*)(stack + sp)) = *((__int64*)(stack + sp - offset));
+
+				} else {
+
+					error(ID_OUT_OF_BOUNDS, ip);
+					sp -= STACK_ELEMENT_SIZE;
+
+				}
+
 				break;
 
 			default: 
 				break;
 
 			}
+
+			sp += STACK_ELEMENT_SIZE;
+
+			ip++;
+			ip += 4;
 
 		}
 
@@ -864,10 +925,10 @@ void error(size_t code, unsigned short index) {
 			*((unsigned __int64*)(stack + sp)) = (unsigned __int64)bp;
 			*((unsigned __int64*)(stack + sp + STACK_ELEMENT_SIZE)) = (unsigned __int64)sp;
 			*((unsigned __int64*)(stack + sp + STACK_ELEMENT_SIZE * 2)) = (unsigned __int64)(ip + 2);
-			sp += STACK_ELEMENT_SIZE * 3;
 
 			ip = *((unsigned short*)(bcode_array + ip + 1));
 			push(*((unsigned short*)(bcode_array + ip + 3)), *((unsigned short*)(bcode_array + ip + 3 + 2)), head);
+			sp += STACK_ELEMENT_SIZE * 3;
 
 			ip += 1 + 2 + 4; //sizeof(OP_FUNC) + sizeof(CURRENT_IP) + sizeof(local) + sizeof(args)
 			sp += (STACK_ELEMENT_SIZE * 12) + ((*head)->sizeof_local * 8); // LOCAL VARIABLES AND D/I/SVAR[0-3]
