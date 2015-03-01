@@ -107,6 +107,7 @@ int main(int argc, char **argv) {
 	for(i = 0; i < bcode_size; i++) {
 	
 		fread(&bcode_array[i], 1, 1, input_bcode);
+		printf("%d ", bcode_array[i]);
 
 	}
 

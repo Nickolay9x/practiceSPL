@@ -21,7 +21,7 @@ void push(unsigned short args, unsigned short local, stack_func **head) {
 
 	} else {
 
-		new_function->sizeof_main_part = NULL;
+		new_function->sizeof_main_part = (unsigned short)NULL;
 
 	}
 
